@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true) // 경섭이테스트
+@JsonIgnoreProperties(ignoreUnknown = true) // 경섭이테스트 테스트중입니다.
 public class Member implements UserDetails {
 
     private Long seq;
