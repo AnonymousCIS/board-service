@@ -9,5 +9,5 @@ public class BoardServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BoardServiceApplication.class, args);
 	}
-
+///test
 }
