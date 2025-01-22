@@ -16,6 +16,7 @@ public class RequestConfig {
     private String name; // 게시판 명
 
     private boolean open;
+
     private String category;  // 줄개행 문자로 여러 분류를 등록
 
     private int rowsPerPage; // 1페이지당 게시글 갯수

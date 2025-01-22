@@ -68,7 +68,7 @@ public class BoardController {
     // 게시글 상태 단일 | 목록 일괄 수정
     // SECRET || BLOCK
     @PatchMapping("/status")
-    public JSONData status(@RequestParam("seq") List<String>seqs) {
+    public JSONData status(@RequestParam("seq") List<String> seqs) {
         
         return new JSONData();
     }
