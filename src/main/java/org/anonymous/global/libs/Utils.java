@@ -1,21 +1,23 @@
 package org.anonymous.global.libs;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.global.entities.CodeValue;
+import org.anonymous.global.repositories.CodeValueRepository;
+import org.anonymous.member.MemberUtil;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Lazy
@@ -23,9 +25,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Utils {
 
+    private final MemberUtil memberUtil;
+
     private final HttpServletRequest request;
     private final MessageSource messageSource;
     private final DiscoveryClient discoveryClient;
+
+    private final CodeValueRepository codeValueRepository;
 
     /**
      * 메서지 코드로 조회된 문구
@@ -122,5 +128,137 @@ public class Utils {
         String auth = request.getHeader("Authorization");
 
         return StringUtils.hasText(auth) ? auth.substring(7).trim() : null;
+    }
+
+    /**
+     * 전체 주소
+     *
+     * @param url
+     * @return
+     */
+    public String getUrl(String url) {
+
+        return String.format("%s://%s:%d%s%s",request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), url);
+    }
+
+    /**
+     * Code - Value 형태로 Redis 저장소 저장
+     *
+     * @param code
+     * @param value
+     */
+    public void saveValue(String code, Object value) {
+
+        CodeValue item = new CodeValue();
+
+        item.setCode(code);
+        item.setValue(value);
+
+        codeValueRepository.save(item);
+    }
+
+    /**
+     * Code 삭제 처리
+     *
+     * @param code
+     */
+    public void deleteValue(String code) {
+
+        codeValueRepository.deleteById(code);
+    }
+
+    /**
+     * code 값으로 value 값 조회
+     *
+     * @param code
+     * @return
+     * @param <T>
+     */
+    public <T> T getValue(String code) {
+
+        CodeValue item = codeValueRepository.findByCode(code);
+
+        return item == null ? null : (T) item.getValue();
+    }
+
+    /**
+     * 사용자별로 구분할 수 있는 Cookie
+     *
+     * @return
+     */
+    public String getUserHash() {
+
+        String userKey = "" + Objects.hash("userHash");
+
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+
+            for (Cookie cookie : cookies) {
+
+                if (cookie.getName().equals("userHash")) {
+
+                    return cookie.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
+    // Browser 정보 Mobile 여부 확인
+    public boolean isMobile() {
+
+        // 요청 header -> User-Agent (Browser 정보)
+        // ★ iPhone / Android 판별도 가능,
+        // 어느 층의 User 가 더 많은지 판단해 App 개발에 활용 ★
+        String ua = request.getHeader("User-Agent");
+
+        // 해당 Pattern 이 포함되면 Mobile 판단
+        String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
+
+        return StringUtils.hasText(ua) && ua.matches(pattern);
+    }
+
+    /**
+     * 요청 헤더 get 편의 기능
+     *
+     * - JWT 토큰이 있으면 자동 추가
+     *
+     * @return
+     */
+    public HttpHeaders getRequestHeader() {
+
+        String token = getAuthToken();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        if (StringUtils.hasText(token)) {
+
+            headers.setBearerAuth(token);
+        }
+
+        return headers;
+    }
+
+    /**
+     * 회원 / 비회원 구분 해시 (int)
+     *
+     * 회원 - 회원번호 / 비회원 - (IP + User-Agent)
+     *
+     * @return
+     */
+    public int getMemberHash() {
+
+        // 회원
+        if (memberUtil.isLogin()) return Objects.hash(memberUtil.getMember().getSeq());
+
+        else { // 비회원
+
+            String ip = request.getRemoteAddr();
+
+            String ua = request.getHeader("User-Agent");
+
+            return Objects.hash(ip, ua);
+        }
     }
 }
