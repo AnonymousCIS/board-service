@@ -1,6 +1,7 @@
 package org.anonymous.board.repositories;
 
 import org.anonymous.board.entities.Config;
+import org.anonymous.board.entities.QConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
@@ -8,10 +9,8 @@ public interface ConfigRepository extends JpaRepository<Config, String>, Queryds
 
     default boolean exists(String bid) {
 
-        // QBoard board = QBoard.board;
+        QConfig config = QConfig.config;
 
-        // return exists(board.bid.eq(bid));
-
-        return false;
+        return exists(config.bid.eq(bid));
     }
 }

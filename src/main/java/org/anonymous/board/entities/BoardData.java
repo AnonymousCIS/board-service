@@ -5,14 +5,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 import org.anonymous.board.constants.BoardStatus;
-import org.anonymous.global.entities.BaseEntity;
+import org.anonymous.global.entities.BaseMemberEntity;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Entity
-public class BoardData extends BaseEntity implements Serializable {
+@Table(indexes = {
+        @Index(name = "idx_bd_created_at", columnList = "createdAt DESC"),
+        @Index(name = "idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
+})
+public class BoardData extends BaseMemberEntity implements Serializable {
 
     @Id
     @GeneratedValue
@@ -79,7 +83,7 @@ public class BoardData extends BaseEntity implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "data", cascade = CascadeType.REMOVE)
-    List<Comment> comment;
+    List<CommentData> comment;
 
     // 이전 게시글
     @Transient

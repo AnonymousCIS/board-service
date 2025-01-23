@@ -34,8 +34,7 @@ public class BoardConfigValidator implements Validator {
 
         if (mode.equals("add")) {
             // 게시판 아이디의 중복 여부 체크
-
-
+            errors.rejectValue("bid", "Duplicated");
         }
     }
 }

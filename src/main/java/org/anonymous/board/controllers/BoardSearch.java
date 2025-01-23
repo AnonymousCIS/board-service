@@ -1,10 +1,11 @@
 package org.anonymous.board.controllers;
 
+import lombok.Data;
 import org.anonymous.global.paging.CommonSearch;
-import org.anonymous.member.Member;
 
 import java.util.List;
 
+@Data
 public class BoardSearch extends CommonSearch {
     // 게시판 단일 & 목록 조회용
     private List<String> bid;
@@ -15,7 +16,7 @@ public class BoardSearch extends CommonSearch {
 
     // 회원 이메일별 조회용
     // 관리자쪽에서 사용
-    private List<Member> email;
+    private List<String> email;
 
     // 분류 조회용
     private List<String> category;

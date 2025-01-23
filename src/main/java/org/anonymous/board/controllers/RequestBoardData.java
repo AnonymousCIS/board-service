@@ -3,10 +3,9 @@ package org.anonymous.board.controllers;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.anonymous.member.Member;
 
 @Data
-public class RequestBoard {
+public class RequestBoardData {
 
     // 게시글 번호
     private Long seq;
@@ -25,7 +24,7 @@ public class RequestBoard {
     @NotBlank
     private String poster;
 
-    private Member email;
+    private String email;
 
     // 비회원 비밀번호
     @Size(min = 4, max = 50)

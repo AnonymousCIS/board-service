@@ -2,7 +2,7 @@ package org.anonymous.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.anonymous.board.validators.BoardValidator;
+import org.anonymous.board.validators.BoardDataValidator;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
@@ -18,7 +18,7 @@ public class BoardController {
 
     private final Utils utils;
 
-    private final BoardValidator boardValidator;
+    private final BoardDataValidator boardDataValidator;
 
     // 게시판 설정 단일 조회
     @GetMapping("/info/{bid}")
@@ -29,7 +29,7 @@ public class BoardController {
 
     // 게시글 작성 & 수정
     @PostMapping("/save")
-    public JSONData save(@Valid@RequestBody RequestBoard form, Errors errors) {
+    public JSONData save(@Valid@RequestBody RequestBoardData form, Errors errors) {
 
         String mode = form.getMode();
 
@@ -37,7 +37,7 @@ public class BoardController {
 
         commonProcess(form.getBid(), mode);
 
-        boardValidator.validate(form, errors);
+        boardDataValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
 
