@@ -29,8 +29,6 @@ public class BoardDeleteService {
 
         BoardData item = infoService.get(seq);
 
-        String gid = item.getGid();
-
         /* 파일 삭제 처리 요청 S */
 
         HttpEntity<Void> request = new HttpEntity<>(utils.getRequestHeader());
@@ -40,7 +38,6 @@ public class BoardDeleteService {
         restTemplate.exchange(URI.create(apiUrl), HttpMethod.DELETE, request, Void.class);
 
         /* 파일 삭제 처리 요청 E */
-
 
         boardDataRepository.delete(item);
         boardDataRepository.flush();

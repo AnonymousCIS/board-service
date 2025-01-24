@@ -105,8 +105,19 @@ public class Pagination {
 
         String qs = request == null ? "" : request.getQueryString();
 
-        // React & Next.js 에서 활용가능하도록 전체 주소 반환
-        baseUrl = request == null ? "?" : String.format("%s://%s:%d%s?",request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
+        if (request == null) {
+
+            baseUrl = "?";
+
+        } else {
+
+            int port = request.getServerPort();
+
+            String _port = port == 80 || port == 443 ? "" : ":" + port;
+
+            // React & Next.js 에서 활용가능하도록 전체 주소 반환
+            baseUrl = String.format("%s://%s%s%s?",request.getScheme(), request.getServerName(), _port, StringUtils.hasText(request.getContextPath()) ? request.getContextPath() : "/");
+        }
 
         if (StringUtils.hasText(qs)) {
 

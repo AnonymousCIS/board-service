@@ -115,12 +115,12 @@ public class BoardAuthService {
 
             if (createdBy == null) { // 비회원 게시글
                 /**
-                 * 비회원 게시글이 인증된 경우 = Session Key(config_게시글번호)가 존재
+                 * 비회원 게시글이 인증된 경우 = Session Key(board_게시글번호)가 존재
                  * 인증이 되지 않은 경우 GuestPasswordCheckException 발생 -> 비밀번호 확인 절차
                  */
 
                 // 사용자별로 다르게 Redis 에 저장
-                if (utils.getValue(utils.getUserHash() + "_config_" + seq) == null) {
+                if (utils.getValue(utils.getUserHash() + "_board_" + seq) == null) {
 
                     utils.saveValue(utils.getUserHash() + "_seq", seq);
 

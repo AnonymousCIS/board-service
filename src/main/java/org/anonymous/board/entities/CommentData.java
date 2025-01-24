@@ -16,11 +16,6 @@ public class CommentData extends BaseMemberEntity implements Serializable {
     @Id @GeneratedValue
     private Long seq;
 
-    // 한개의 게시글에 여러 댓글
-    // 🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅
-    // 프론트 처리? 불필요?
-    // 게시글 쪽에서는 Cascade REMOVE 때문에 OneToMany 사용한것 연관
-    // 🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅
      @JsonIgnore
      @ToString.Exclude
      @ManyToOne(fetch = FetchType.LAZY)

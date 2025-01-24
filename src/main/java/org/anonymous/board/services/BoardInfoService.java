@@ -53,7 +53,7 @@ public class BoardInfoService {
      */
     public BoardData get(Long seq) {
 
-        BoardData item = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
+        BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
         addInfo(item, true);
 

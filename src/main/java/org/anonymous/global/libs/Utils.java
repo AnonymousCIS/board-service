@@ -138,7 +138,11 @@ public class Utils {
      */
     public String getUrl(String url) {
 
-        return String.format("%s://%s:%d%s%s",request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), url);
+        int port = request.getServerPort();
+
+        String _port = port == 80 || port == 443 ? "" : ":" + port;
+
+        return String.format("%s://%s%s%s%s",request.getScheme(), request.getServerName(), _port, request.getContextPath(), url);
     }
 
     /**

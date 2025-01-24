@@ -74,7 +74,7 @@ public class BoardController {
     }
     
     // 게시글 조회수 반영 처리
-    @PatchMapping("/viewcount")
+    @GetMapping("/viewcount")
     public JSONData viewCount() {
         
         return new JSONData();
