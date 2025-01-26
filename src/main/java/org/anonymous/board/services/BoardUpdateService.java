@@ -61,6 +61,7 @@ public class BoardUpdateService {
              * - 게시판 설정, 회원
              * - gid
              * - 작성자 ip 정보, UserAgent (Browser 정보)
+             * - 게시글 상태 (ALL | Secret)
              */
 
             Config config = configInfoService.get(form.getBid());
@@ -71,6 +72,7 @@ public class BoardUpdateService {
             data.setGid(form.getGid());
             data.setIpAddr(request.getRemoteAddr());
             data.setUserAgent(request.getHeader("User-Agent"));
+            data.setBoardStatus(form.getStatus());
         }
 
         String guestPw = form.getGuestPw();
