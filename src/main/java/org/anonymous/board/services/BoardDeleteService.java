@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Lazy
 @Service
@@ -26,8 +28,12 @@ public class BoardDeleteService {
     private final RestTemplate restTemplate;
 
     /**
-     * 관리자만 가능
+     * 게시글 단일 삭제
      * DB 에서 삭제
+     *
+     * 관리자만 가능
+     *
+     * Base Method
      *
      * @param seq
      * @return
@@ -54,5 +60,27 @@ public class BoardDeleteService {
         utils.deleteValue(utils.getUserHash() + "_board_" + seq);
 
         return item;
+    }
+
+    /**
+     * 게시글 목록 삭제
+     *
+     * @param seqs
+     * @return
+     */
+    public List<BoardData> delete(List<Long> seqs) {
+
+        List<BoardData> deleted = new ArrayList<>();
+
+        for (Long seq : seqs) {
+
+            BoardData item = delete(seq);
+
+            if (item != null) {
+
+                deleted.add(item);
+            }
+        }
+        return deleted;
     }
 }

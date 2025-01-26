@@ -61,7 +61,7 @@ public class BoardStatusService {
      */
     public List<BoardData> process(List<Long> seqs, BoardStatus status) {
 
-        List<BoardData> boardDataList = new ArrayList<>();
+        List<BoardData> processed = new ArrayList<>();
 
         for (Long seq : seqs) {
 
@@ -69,10 +69,10 @@ public class BoardStatusService {
 
             if (boardData != null) {
 
-                boardDataList.add(boardData);
+                processed.add(boardData);
             }
         }
 
-        return boardDataList;
+        return processed;
     }
 }

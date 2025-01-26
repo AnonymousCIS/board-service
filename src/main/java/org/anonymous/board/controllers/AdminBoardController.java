@@ -2,6 +2,7 @@ package org.anonymous.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.BoardDeleteService;
 import org.anonymous.board.services.comment.CommentDeleteService;
@@ -104,7 +105,9 @@ public class AdminBoardController {
      * @return
      */
     @DeleteMapping("/deletes")
-    public JSONData deletes() {
+    public JSONData deletes(@RequestParam("seq") List<Long> seqs) {
+
+        List<BoardData> items = boardDeleteService.delete(seqs);
 
         return new JSONData();
     }
