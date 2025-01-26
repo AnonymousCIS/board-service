@@ -2,7 +2,7 @@ package org.anonymous.board.services.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.entities.Config;
-import org.anonymous.board.entities.QBoardData;
+import org.anonymous.board.exceptions.ConfigNotFoundException;
 import org.anonymous.board.repositories.ConfigRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -27,9 +27,7 @@ public class BoardConfigDeleteService {
      */
     public Config process(String bid) {
 
-        QBoardData boardData = QBoardData.boardData;
-
-        Config config = configRepository.findById(bid).orElse(null);
+        Config config = configRepository.findById(bid).orElseThrow(ConfigNotFoundException::new);
 
         if (config == null) {
 

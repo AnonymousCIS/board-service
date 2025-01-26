@@ -2,6 +2,7 @@ package org.anonymous.board.services;
 
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.entities.BoardData;
+import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.global.libs.Utils;
 import org.springframework.context.annotation.Lazy;
@@ -41,6 +42,11 @@ public class BoardDeleteService {
     public BoardData delete(Long seq) {
 
         BoardData item = infoService.get(seq);
+
+        if (item != null) {
+
+            throw new BoardDataNotFoundException();
+        }
 
         /* 파일 삭제 처리 요청 S */
 
