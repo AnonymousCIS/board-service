@@ -68,6 +68,10 @@ public class BoardController {
 
         mode = StringUtils.hasText(mode) ? mode : "write";
 
+        BoardStatus status = form.getStatus();
+
+        status = StringUtils.hasText(String.valueOf(status)) ? status : BoardStatus.ALL;
+
         commonProcess(form.getBid(), mode);
 
         boardDataValidator.validate(form, errors);

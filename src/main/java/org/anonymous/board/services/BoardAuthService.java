@@ -128,12 +128,12 @@ public class BoardAuthService {
                 }
 
                 // 미로그인 상태 || 로그인 상태이지만 게시글 작성자가 아닐 경우
-            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 가능 통제
+            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 상태 변경 가능 통제
 
                 isVerified = false;
             }
 
-        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제
+        } else if (mode.equals("comment")) { // 댓글 수정 & 상태 변경
 
             String commenter = comment.getCreatedBy();
 

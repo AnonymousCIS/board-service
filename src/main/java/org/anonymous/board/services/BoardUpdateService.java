@@ -91,6 +91,7 @@ public class BoardUpdateService {
         data.setExternalLink(form.getExternalLink());
         data.setYoutubeUrl(form.getYoutubeUrl());
         data.setCategory(form.getCategory());
+        data.setBoardStatus(form.getStatus());
 
         boardDataRepository.saveAndFlush(data);
 

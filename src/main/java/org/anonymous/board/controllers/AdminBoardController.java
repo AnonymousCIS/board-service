@@ -98,14 +98,23 @@ public class AdminBoardController {
         return new JSONData(items);
     }
 
-    // 게시글 단일 | 목록 일괄 삭제
+    /**
+     * 게시글 단일 | 목록 일괄 삭제
+     *
+     * @return
+     */
     @DeleteMapping("/deletes")
     public JSONData deletes() {
 
         return new JSONData();
     }
-    
-    // 댓글 단일 | 목록 일괄 삭제
+
+    /**
+     * 댓글 단일 | 목록 일괄 삭제
+     *
+     * @param seqs
+     * @return
+     */
     @DeleteMapping("/comment/deletes")
     public JSONData commentDeletes(@RequestParam("seq") List<Long> seqs) {
         

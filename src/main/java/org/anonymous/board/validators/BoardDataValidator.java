@@ -3,10 +3,8 @@ package org.anonymous.board.validators;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
-import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.repositories.CommentDataRepository;
-import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.validators.PasswordValidator;
 import org.anonymous.member.MemberUtil;
@@ -93,7 +91,7 @@ public class BoardDataValidator implements Validator, PasswordValidator {
      * 게시글 삭제 가능 여부 체크
      *  - 댓글이 존재하면 삭제 불가
      * @param seq
-     */
+
     public void checkDelete(Long seq) {
 
         QCommentData commentData = QCommentData.commentData;
@@ -102,4 +100,5 @@ public class BoardDataValidator implements Validator, PasswordValidator {
             throw new BadRequestException(utils.getMessage("Exist.comment"));
         }
     }
+    */
 }

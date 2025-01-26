@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.board.controllers.BoardSearch;
 import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
@@ -14,6 +15,7 @@ import org.anonymous.board.entities.QBoardData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
+import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -54,6 +56,10 @@ public class BoardInfoService {
     public BoardData get(Long seq) {
 
         BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
+
+        if ((item.getBoardStatus().equals(BoardStatus.BLOCK)) && (!memberUtil.isAdmin())) throw new UnAuthorizedException();
+
+        else if ((item.getBoardStatus().equals(BoardStatus.SECRET)) && (!memberUtil.isAdmin())) throw new UnAuthorizedException();
 
         addInfo(item, true);
 
@@ -349,7 +355,6 @@ public class BoardInfoService {
      * @param item
      */
     private void addInfo(BoardData item, boolean isView) {
-
         /* 이전 & 다음 게시글 S */
 
         // 게시글 단일 상세조회일 경우에만 이전 & 다음 게시글 조회
