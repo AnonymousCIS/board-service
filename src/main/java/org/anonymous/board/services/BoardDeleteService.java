@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,58 @@ public class BoardDeleteService {
     private final BoardDataRepository boardDataRepository;
 
     private final RestTemplate restTemplate;
+
+    /**
+     * 게시글 단일 삭제 (일반 사용자)
+     *
+     * DB 에서 삭제 X
+     * 현재 시간으로 DeletedAt 할당
+     *
+     * Base Method
+     *
+     * @param seq
+     * @return
+     */
+    public BoardData userDelete(Long seq) {
+
+        BoardData item = infoService.get(seq);
+
+        if (item == null) {
+
+            throw new BoardDataNotFoundException();
+        }
+
+        item.setDeletedAt(LocalDateTime.now());
+
+        boardDataRepository.saveAndFlush(item);
+
+        return item;
+    }
+
+    /**
+     * 게시글 목록 삭제 (일반 사용자)
+     *
+     * DB 에서 삭제 X
+     * 현재 시간으로 DeletedAt 할당
+     *
+     * @param seqs
+     * @return
+     */
+    public List<BoardData> userDelete(List<Long> seqs) {
+
+        List<BoardData> userDeleted = new ArrayList<>();
+
+        for (Long seq : seqs) {
+
+            BoardData item = userDelete(seq);
+
+            if (item != null) {
+
+                userDeleted.add(item);
+            }
+        }
+        return userDeleted;
+    }
 
     /**
      * 게시글 단일 삭제

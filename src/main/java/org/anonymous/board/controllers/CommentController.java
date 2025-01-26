@@ -2,10 +2,12 @@ package org.anonymous.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.services.BoardAuthService;
+import org.anonymous.board.services.BoardStatusService;
+import org.anonymous.board.services.comment.CommentDeleteService;
 import org.anonymous.board.services.comment.CommentInfoService;
-import org.anonymous.board.services.comment.CommentStatusService;
 import org.anonymous.board.services.comment.CommentUpdateService;
 import org.anonymous.board.validators.CommentValidator;
 import org.anonymous.global.exceptions.BadRequestException;
@@ -32,7 +34,9 @@ public class CommentController {
 
     private final CommentUpdateService updateService;
 
-    private final CommentStatusService statusService;
+    private final BoardStatusService statusService;
+
+    private final CommentDeleteService deleteService;
 
     private final CommentValidator commentValidator;
 
@@ -101,18 +105,36 @@ public class CommentController {
     /**
      * 댓글 상태 단일 | 목록 일괄 수정
      *
-     * SECRET || BLOCK
+     * ALL || BLOCK
      *
      * @return
      */
     @PatchMapping("/status")
-    public JSONData status(@PathVariable("seq") Long seqs) {
+    public JSONData status(@RequestParam("seq") List<Long> seqs, BoardStatus status) {
 
         commonProcess(seqs);
 
-        // List<CommentData> items = statusService.process();
+        List<Object> items = statusService.process(seqs, status, "comment");
 
-        return new JSONData();
+        return new JSONData(items);
+    }
+
+    /**
+     * 댓글 삭제 단일 목록 일괄 수정
+     *
+     * DB 삭제 X, 일반 유저 전용 삭제로 deleteAt 현재 시간으로 부여
+     *
+     * @param seqs
+     * @return
+     */
+    @PatchMapping("/userdeletes")
+    public JSONData userDeletes(@RequestParam("seq") List<Long> seqs) {
+
+        commonProcess(seqs);
+
+        List<CommentData> items = deleteService.userDelete(seqs);
+
+        return new JSONData(items);
     }
 
     /**
@@ -147,5 +169,19 @@ public class CommentController {
 
         // 댓글 권한 체크
         authService.check("comment", seq);
+    }
+
+    /**
+     * 게시글 번호로 공통 처리
+     *
+     * @param seqs
+     */
+    private void commonProcess(List<Long> seqs) {
+
+        for (Long seq : seqs) {
+
+            // 게시판 권한 체크 - 조회, 수정, 삭제
+            authService.check("comment", seq);
+        }
     }
 }

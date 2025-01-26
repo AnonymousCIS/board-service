@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.global.entities.BaseMemberEntity;
 
 import java.io.Serializable;
@@ -16,10 +17,13 @@ public class CommentData extends BaseMemberEntity implements Serializable {
     @Id @GeneratedValue
     private Long seq;
 
-     @JsonIgnore
-     @ToString.Exclude
-     @ManyToOne(fetch = FetchType.LAZY)
-     private BoardData data;
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BoardData data;
+
+    @Enumerated(EnumType.STRING)
+    private BoardStatus boardStatus;
 
     // 작성자
     @Column(length = 40, nullable = false)

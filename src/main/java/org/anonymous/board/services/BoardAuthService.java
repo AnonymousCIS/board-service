@@ -101,13 +101,13 @@ public class BoardAuthService {
 
             authority = config.getViewAuthority();
 
-        } else if (List.of("edit", "status").contains(mode)) {
+        } else if (List.of("edit", "delete").contains(mode)) {
             /**
              * 1. 회원 게시글인 경우
-             *      작성한 회원 본인만 수정 & 상태 변경 가능
+             *      작성한 회원 본인만 수정 & 삭제 상태 변경 가능
              *
              * 2. 비회원 게시글인 경우
-             *      비회원 비밀번호 확인이 완료된 경우 수정 & 상태 변경 가능
+             *      비회원 비밀번호 확인이 완료된 경우 수정 & 삭제 상태 변경 가능
              */
             BoardData item = infoService.get(seq);
 
@@ -128,12 +128,12 @@ public class BoardAuthService {
                 }
 
                 // 미로그인 상태 || 로그인 상태이지만 게시글 작성자가 아닐 경우
-            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 상태 변경 가능 통제
+            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 상태 변경 가능 통제
 
                 isVerified = false;
             }
 
-        } else if (mode.equals("comment")) { // 댓글 수정 & 상태 변경
+        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제 상태 변경
 
             String commenter = comment.getCreatedBy();
 

@@ -77,13 +77,12 @@ public class BoardData extends BaseMemberEntity implements Serializable {
     private String category;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    BoardStatus boardStatus;
+    private BoardStatus boardStatus;
 
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "data", cascade = CascadeType.REMOVE)
-    List<CommentData> comment;
+    private List<CommentData> comment;
 
     // 이전 게시글
     @Transient
