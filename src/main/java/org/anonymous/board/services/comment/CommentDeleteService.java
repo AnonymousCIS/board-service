@@ -24,7 +24,7 @@ public class CommentDeleteService {
      * @param seq
      * @return
      */
-    public BoardData delete(Long seq) {
+    public CommentData delete(Long seq) {
 
         CommentData item = infoService.get(seq);
 
@@ -36,7 +36,6 @@ public class CommentDeleteService {
         // 댓글 개수 업데이트
         updateService.updateCount(data.getSeq());
 
-
-        return data;
+        return item;
     }
 }

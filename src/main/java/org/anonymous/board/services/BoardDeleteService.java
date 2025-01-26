@@ -17,15 +17,15 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class BoardDeleteService {
 
+    private final Utils utils;
+
     private final BoardInfoService infoService;
 
     private final BoardDataRepository boardDataRepository;
 
     private final RestTemplate restTemplate;
 
-    private final Utils utils;
-
-    public void delete(Long seq) {
+    public BoardData delete(Long seq) {
 
         BoardData item = infoService.get(seq);
 
@@ -40,9 +40,12 @@ public class BoardDeleteService {
         /* 파일 삭제 처리 요청 E */
 
         boardDataRepository.delete(item);
+
         boardDataRepository.flush();
 
         // 비회원 인증 정보 삭제
         utils.deleteValue(utils.getUserHash() + "_board_" + seq);
+
+        return item;
     }
 }

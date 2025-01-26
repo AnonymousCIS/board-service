@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Lazy
@@ -19,14 +21,42 @@ public class BoardConfigUpdateService {
     private final ConfigRepository configRepository;
     private final Utils utils;
 
-    public void process(RequestConfig form) {
+    public Config process(RequestConfig form) {
 
         String bid = form.getBid();
 
-
         Config config = configRepository.findById(bid).orElseGet(Config::new);
 
-        config.setBid(bid);
+        addInfo(config, form);
+
+        configRepository.saveAndFlush(config);
+
+        return config;
+    }
+
+    public List<Config> process(List<RequestConfig> items) {
+
+        if (items == null && items.isEmpty()) return null;
+
+        List<Config> processed = new ArrayList<>();
+
+        for (RequestConfig form : items) {
+
+            Config item = configRepository.findById(form.getBid()).orElseGet(Config::new);
+
+            addInfo(item, form);
+
+            processed.add(item);
+        }
+
+        configRepository.saveAllAndFlush(processed);
+
+        return processed;
+    }
+
+    private void addInfo(Config config, RequestConfig form) {
+
+        config.setBid(form.getBid());
         config.setName(form.getName());
         config.setOpen(form.isOpen());
         config.setCategory(form.getCategory());
@@ -47,7 +77,5 @@ public class BoardConfigUpdateService {
         config.setLocationAfterWriting(StringUtils.hasText(locationAfterWriting) ? locationAfterWriting : "list");
 
         config.setListUnderView(form.isListUnderView());
-
-        configRepository.saveAndFlush(config);
     }
 }
