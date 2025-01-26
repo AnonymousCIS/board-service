@@ -2,6 +2,7 @@ package org.anonymous.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.*;
@@ -118,17 +119,17 @@ public class BoardController {
     /**
      * 게시글 상태 단일 | 목록 일괄 수정
      *
-     * SECRET || BLOCK
+     * ALL || SECRET || BLOCK
      *
      * @param seqs
      * @return
      */
-    @PatchMapping("/status/{seq}")
-    public JSONData status(@PathVariable("seq") Long seqs) {
+    @PatchMapping("/status")
+    public JSONData status(@RequestParam("seq") List<Long> seqs, BoardStatus status) {
 
-        // commonProcess(seqs, "");
+        // commonProcess(seqs, "status");
 
-        List<BoardData> items = statusService.process(seqs);
+        List<BoardData> items = statusService.process(seqs, status);
         
         return new JSONData(items);
     }
@@ -175,6 +176,8 @@ public class BoardController {
     /**
      * 게시글 번호로 공통 처리
      *
+     * Base Method
+     *
      * @param seq
      * @param mode
      */
@@ -182,6 +185,21 @@ public class BoardController {
 
         // 게시판 권한 체크 - 조회, 수정, 삭제
         authService.check(mode, seq);
+    }
+
+    /**
+     * 게시글 번호로 공통 처리
+     *
+     * @param seqs
+     * @param mode
+     */
+    private void commonProcess(List<Long> seqs, String mode) {
+
+        for (Long seq : seqs) {
+
+            // 게시판 권한 체크 - 조회, 수정, 삭제
+            authService.check(mode, seq);
+        }
     }
 
     /**

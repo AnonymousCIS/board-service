@@ -25,6 +25,13 @@ public class BoardDeleteService {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * 관리자만 가능
+     * DB 에서 삭제
+     *
+     * @param seq
+     * @return
+     */
     public BoardData delete(Long seq) {
 
         BoardData item = infoService.get(seq);
