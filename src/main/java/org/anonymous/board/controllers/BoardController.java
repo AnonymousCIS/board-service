@@ -127,7 +127,7 @@ public class BoardController {
     @PatchMapping("/status")
     public JSONData status(@RequestParam("seq") List<Long> seqs, BoardStatus status) {
 
-        // commonProcess(seqs, "status");
+        commonProcess(seqs, "status");
 
         List<BoardData> items = statusService.process(seqs, status);
         

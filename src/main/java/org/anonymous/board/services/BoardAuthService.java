@@ -82,10 +82,10 @@ public class BoardAuthService {
          * mode 값
          *
          * write & list / bid 체크
-         * edit & view / seq 체크
+         * edit & view & status / seq 체크
          *
          */
-        // 게시글 작성 & 목록 & 조회 & 수정(삭제) 권한 체크
+        // 게시글 작성 & 목록 & 조회 & 수정 & 상태 변경 권한 체크
         Authority authority = null;
 
         // false 일 경우 AlertBackException
@@ -101,13 +101,13 @@ public class BoardAuthService {
 
             authority = config.getViewAuthority();
 
-        } else if (List.of("edit", "delete").contains(mode)) {
+        } else if (List.of("edit", "status").contains(mode)) {
             /**
              * 1. 회원 게시글인 경우
-             *      작성한 회원 본인만 수정 & 삭제 가능
+             *      작성한 회원 본인만 수정 & 상태 변경 가능
              *
              * 2. 비회원 게시글인 경우
-             *      비회원 비밀번호 확인이 완료된 경우 수정 & 삭제 가능
+             *      비회원 비밀번호 확인이 완료된 경우 수정 & 상태 변경 가능
              */
             BoardData item = infoService.get(seq);
 
