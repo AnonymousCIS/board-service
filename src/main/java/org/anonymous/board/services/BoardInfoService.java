@@ -156,6 +156,20 @@ public class BoardInfoService {
             andBuilder.and(boardData.boardStatus.in(statuses));
         }
 
+        // 비밀글, 차단글 조회 제외
+        if (!memberUtil.isAdmin()) {
+
+            // ne = eq 반대, Not Equal
+            // dsl 문은 ! 사용 불가
+
+            // 비밀 게시글일 경우
+            andBuilder.and(boardData.boardStatus.ne(BoardStatus.SECRET)
+                    .or(boardData.createdBy.eq(memberUtil.getMember().getEmail())));
+
+            // 관리자 차단 게시글일 경우
+            andBuilder.and(boardData.boardStatus.ne(BoardStatus.BLOCK));
+        }
+
         /**
          * 키워드 검색
          *
@@ -199,7 +213,7 @@ public class BoardInfoService {
 
                 condition = poster;
 
-            } else if (sopt.equals("COMMENT")) { // 댓글 검색
+            } else if (sopt.equals("COMMENT")) { // 댓글 내용 검색
 
                 condition = comment;
             }
@@ -224,6 +238,8 @@ public class BoardInfoService {
 
         JPAQuery<BoardData> query = queryFactory.selectFrom(boardData)
                 .leftJoin(boardData.config)
+                .fetchJoin()
+                .leftJoin(boardData.comment, commentData)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
