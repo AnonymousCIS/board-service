@@ -1,13 +1,16 @@
 package org.anonymous.board.services.comment;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.board.controllers.RequestComment;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.CommentNotFoundException;
 import org.anonymous.board.repositories.CommentDataRepository;
+import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.member.Member;
 import org.anonymous.member.MemberUtil;
 import org.modelmapper.ModelMapper;
@@ -43,6 +46,10 @@ public class CommentInfoService {
 
         CommentData item = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
 
+        if (item.getBoardStatus().equals(BoardStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+
+        if (item.getBoardStatus().equals(BoardStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+
         return item;
     }
 
@@ -74,12 +81,21 @@ public class CommentInfoService {
      */
     public List<CommentData> getList(Long seq) {
 
+        BooleanBuilder andBuilder = new BooleanBuilder();
 
         QCommentData commentData = QCommentData.commentData;
 
+        // 관리자가 아닐 경우 차단 댓글을 조회 목록에서 제외
+        if (!memberUtil.isAdmin()) {
+
+            andBuilder.and(commentData.boardStatus.ne(BoardStatus.BLOCK));
+        }
+
+        // 댓글의 부모인 게시글의 등록번호(seq)로 조건
+        andBuilder.and(commentData.data.seq.eq(seq));
+
         List<CommentData> items = queryFactory.selectFrom(commentData)
-                // 댓글의 부모인 게시글의 등록번호(seq)로 조건
-                .where(commentData.data.seq.eq(seq))
+                .where(andBuilder)
                 .orderBy(commentData.createdAt.asc())
                 .fetch();
 

@@ -148,7 +148,7 @@ public class BoardInfoService {
             andBuilder.and(boardData.category.in(categories));
         }
 
-        // 상태별 검색
+        // 상태별 검색 - 관리자용
         List<BoardStatus> statuses = search.getStatus();
 
         if (statuses != null && !statuses.isEmpty()) {
@@ -156,7 +156,7 @@ public class BoardInfoService {
             andBuilder.and(boardData.boardStatus.in(statuses));
         }
 
-        // 비밀글, 차단글 조회 제외
+        // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
         if (!memberUtil.isAdmin()) {
 
             // ne = eq 반대, Not Equal
