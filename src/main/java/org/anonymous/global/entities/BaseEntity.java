@@ -28,5 +28,4 @@ public abstract class BaseEntity {
 
     @JsonFormat(pattern = "yyyy-MM-DD HH:mm:ss")
     private LocalDateTime deletedAt;
-
 }

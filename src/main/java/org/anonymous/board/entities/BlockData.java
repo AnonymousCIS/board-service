@@ -8,6 +8,8 @@
 //@Entity
 //public class BlockData {
 //
+//    // 차단당한 컨텐츠 예시
+//
 //    @Id
 //    @GeneratedValue
 //    private Long seq;
@@ -17,4 +19,8 @@
 //    @Column(nullable = false)
 //    @OneToMany
 //    private BoardData boardData;
+//
+//    @Column(nullable = false)
+//    @OneToMany
+//    private CommentData commentData;
 //}

@@ -61,7 +61,7 @@ public class BoardStatusService {
             data = commentData;
         }
 
-        // 여기서주면되나?
+        // 여기서 Member 도메인한테 email, type(게시글|댓글), seq(해당 게시글, 댓글) 주기
 
         return data;
     }
