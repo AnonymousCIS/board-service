@@ -12,6 +12,7 @@ import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.entities.QBoardData;
+import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
@@ -57,9 +58,9 @@ public class BoardInfoService {
 
         BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
-        if ((item.getBoardStatus().equals(BoardStatus.BLOCK)) && (!memberUtil.isAdmin())) throw new UnAuthorizedException();
+        if (item.getBoardStatus().equals(BoardStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-        else if ((item.getBoardStatus().equals(BoardStatus.SECRET)) && (!memberUtil.isAdmin())) throw new UnAuthorizedException();
+        if (item.getBoardStatus().equals(BoardStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
 
         addInfo(item, true);
 
@@ -131,6 +132,8 @@ public class BoardInfoService {
 
         QBoardData boardData = QBoardData.boardData;
 
+        QCommentData commentData = QCommentData.commentData;
+
         // 게시판 ID (bid) 검색, 모아보기 기능도 있기때문에 List 형태
         if (bids != null && !bids.isEmpty()) {
 
@@ -145,6 +148,14 @@ public class BoardInfoService {
             andBuilder.and(boardData.category.in(categories));
         }
 
+        // 상태별 검색
+        List<BoardStatus> statuses = search.getStatus();
+
+        if (statuses != null && !statuses.isEmpty()) {
+
+            andBuilder.and(boardData.boardStatus.in(statuses));
+        }
+
         /**
          * 키워드 검색
          *
@@ -154,8 +165,7 @@ public class BoardInfoService {
          * CONTENT : 내용
          * SUBJECT_CONTENT : 제목 + 내용
          * POSTER : 작성자 + 이메일 + 닉네임
-         *
-         * 추후 댓글(COMMENT) 추가?
+         * COMMENT : 댓글 내용
          */
         String sopt = search.getSopt();
         String skey = search.getSkey();
@@ -169,6 +179,7 @@ public class BoardInfoService {
             StringExpression subject = boardData.subject;
             StringExpression content = boardData.content;
             StringExpression poster = boardData.poster.concat(boardData.createdBy);
+            StringExpression comment = commentData.content;
 
             StringExpression condition = null;
 
@@ -188,7 +199,12 @@ public class BoardInfoService {
 
                 condition = poster;
 
-            } else { // 통합 검색
+            } else if (sopt.equals("COMMENT")) { // 댓글 검색
+
+                condition = comment;
+            }
+
+            else { // 통합 검색
 
                 condition = subject.concat(content).concat(poster);
             }
