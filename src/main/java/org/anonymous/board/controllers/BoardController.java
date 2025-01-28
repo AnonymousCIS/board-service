@@ -1,5 +1,10 @@
 package org.anonymous.board.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.constants.BoardStatus;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Board API", description = "공용 Board 기능")
 @RestController
 @RequiredArgsConstructor
 public class BoardController {
@@ -46,6 +52,15 @@ public class BoardController {
      * @param bid
      * @return
      */
+    @Operation(summary = "게시판 단일 조회", description = "게시판 ID로 게시판을 검색해 단일 조회합니다.")
+    @Parameters({
+            @Parameter(name = "bid", description = "게시판 ID", required = true, examples = {
+                    @ExampleObject(name = "notice", value = "notice"),
+                    @ExampleObject(name = "freetalk", value = "freetalk"),
+                    @ExampleObject(name = "FAQ", value = "FAQ"),
+                    @ExampleObject(name = "QNA", value = "QNA")
+            }),
+    })
     @GetMapping("/info/{bid}")
     public JSONData configView(@PathVariable("bid") String bid) {
 
@@ -61,6 +76,21 @@ public class BoardController {
      * @param errors
      * @return
      */
+    @Operation(summary = "게시글 등록 & 수정 처리", description = "신규 게시글을 등록하거나 혹은 기존 게시글을 수정합니다.")
+    @Parameters({
+            @Parameter(name = "form", description = "게시글 작성 양식"),
+            @Parameter(name = "seq", description = "게시글 ID", required = true, example = "1125"),
+            @Parameter(name = "bid", description = "게시글이 속한 게시판 ID", required = true, example = "notice"),
+            @Parameter(name = "mode", description = "게시글 처리 모드", required = true, examples = {
+                    @ExampleObject(name = "write", value = "write"),
+                    @ExampleObject(name = "edit", value = "edit")
+            }),
+            @Parameter(name = "status", description = "게시글 공개 상태", required = true, examples = {
+                    @ExampleObject(name = "ALL", value = "ALL", description = "전체 공개 상태"),
+                    @ExampleObject(name = "SECRET", value = "SECRET", description = "비밀 상태(관리자 & 작성자 조회 가능)"),
+                    @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
+            })
+    })
     @PostMapping("/save")
     public JSONData save(@Valid@RequestBody RequestBoardData form, Errors errors) {
 
