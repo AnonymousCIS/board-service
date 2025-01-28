@@ -110,11 +110,11 @@ public class CommentController {
      * @return
      */
     @PatchMapping("/status")
-    public JSONData status(@RequestParam("seq") List<Long> seqs, BoardStatus status) {
+    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
 
         commonProcess(seqs);
 
-        List<Object> items = statusService.process(seqs, status, "comment");
+        List<CommentData> items = statusService.process(seqs, status , "comment");
 
         return new JSONData(items);
     }

@@ -11,7 +11,6 @@ import org.anonymous.board.repositories.CommentDataRepository;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,26 +28,30 @@ public class BoardStatusService {
      * 게시글 & 댓글 상태 단일 변경
      *
      * Base Method
-     *
      * @param seq
-     * @return
+     * @param status
+     * @param mode
      */
-    public Object process(Long seq, BoardStatus status, String mode) {
+    public <T> T process(Long seq, BoardStatus status, String mode) {
 
-        if (!StringUtils.hasText(mode)) throw new BadRequestException();
+        // 잘못된 요청
+        if ((!mode.equals("board") && !mode.equals("comment")) || seq == null || status == null) throw new BadRequestException();
 
-        Object data = null;
+        T data = null;
+
+        String type = "";
 
         if (mode.equals("board")) {
 
-            // 존재하지 않는 게시글일 경우 예외 발생
             BoardData boardData = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
 
             boardData.setBoardStatus(status);
 
             boardDataRepository.saveAndFlush(boardData);
 
-            data = boardData;
+            data = (T) boardData;
+
+            type = "board";
 
         } else if (mode.equals("comment")) {
 
@@ -58,9 +61,10 @@ public class BoardStatusService {
 
             commentDataRepository.saveAndFlush(commentData);
 
-            data = commentData;
-        }
+            data = (T) commentData;
 
+            type = "comment";
+        }
         // 여기서 Member 도메인한테 email, type(게시글|댓글), seq(해당 게시글, 댓글) 주기
 
         return data;
@@ -70,27 +74,20 @@ public class BoardStatusService {
      * 게시글 & 댓글 상태 목록 변경
      *
      * @param seqs
-     * @return
+     * @param status
+     * @param mode
      */
-    public List<Object> process(List<Long> seqs, BoardStatus status, String mode) {
+    public <T> List<T> process(List<Long> seqs, BoardStatus status, String mode) {
 
-        List<Object> processed = new ArrayList<>();
+        List<T> processed = new ArrayList<>();
 
         for (Long seq : seqs) {
 
-            if (mode.equals("board")) {
+            T data = process(seq, status, mode);
 
-                Object data = process(seq, status, mode);
-
-                if (data != null) processed.add(data);
-
-            } else if (mode.equals("comment")) {
-
-                Object data = process(seq, status, mode);
-
-                if (data != null) processed.add(data);
-            }
+            if (data != null) processed.add(data);
         }
         return processed;
     }
 }
+

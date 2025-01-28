@@ -125,11 +125,11 @@ public class BoardController {
      * @return
      */
     @PatchMapping("/status")
-    public JSONData status(@RequestParam("seq") List<Long> seqs, BoardStatus status) {
+    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
 
         commonProcess(seqs, "delete");
 
-        List<Object> items = statusService.process(seqs, status, "board");
+        List<BoardData> items = statusService.process(seqs, status, "board");
         
         return new JSONData(items);
     }
