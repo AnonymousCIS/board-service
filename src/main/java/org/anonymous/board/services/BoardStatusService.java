@@ -7,6 +7,7 @@ import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.exceptions.CommentNotFoundException;
+import org.anonymous.board.repositories.BlockDataRepository;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.repositories.CommentDataRepository;
 import org.anonymous.global.exceptions.BadRequestException;
@@ -31,6 +32,8 @@ public class BoardStatusService {
     private final Utils utils;
 
     private final RestTemplate restTemplate;
+
+    private final BlockDataRepository blockDataRepository;
 
     private final BoardDataRepository boardDataRepository;
 
@@ -116,6 +119,8 @@ public class BoardStatusService {
             String apiUrl = utils.serviceUrl("member-service", "/admin/status/" + form);
 
             ResponseEntity<String> item = restTemplate.exchange(apiUrl, HttpMethod.PATCH, request, String.class);
+
+            blockDataRepository.saveAndFlush(form);
         }
         /* Member 도메인에게 차단 게시글/댓글 정보 등록 요청 E */
 
