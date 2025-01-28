@@ -100,6 +100,7 @@ public class BoardStatusService {
             form.setSeq(blockContentSeq);
             form.setEmail(email);
 
+            // 🍬🍬🍬🍬🍬🍬🍬🍬🍬🍬🍬🍬
             // 근데 이거 항상 BLOCK 이라서 안넘겨줘도 될 것 같은데??
             // 차단 컨텐츠 이외의 비밀 컨텐츠도 멤버가 받을 것인지 물어보기
             form.setStatus(status);
@@ -139,7 +140,7 @@ public class BoardStatusService {
             if (data != null) processed.add(data);
         }
 
-        /* 여기서 Member 도메인에게 목록 /admin/statues/로 넘겨야하나? 아니면 단일쪽에서 다 처리되도록..? */
+        /* 여기서 Member 도메인에게 목록 /admin/statues/로 넘겨야하나? 아니면 단일쪽에서 다 처리되도록..? 🍬🍬🍬🍬🍬🍬 */
 
         return processed;
     }

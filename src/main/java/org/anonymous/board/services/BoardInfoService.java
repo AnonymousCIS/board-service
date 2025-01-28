@@ -227,7 +227,7 @@ public class BoardInfoService {
         }
 
         // 회원 이메일로 검색
-        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany는 자주 쓰이지 않음
+        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany 는 자주 쓰이지 않음
         List<String> emails = search.getEmail();
 
         if (emails != null && !emails.isEmpty()) {
