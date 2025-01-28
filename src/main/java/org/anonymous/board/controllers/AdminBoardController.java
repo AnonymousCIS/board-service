@@ -85,9 +85,9 @@ public class AdminBoardController {
             throw new BadRequestException(utils.getErrorMessages(errors));
         }
 
-        Config item = updateService.process(form);
+        Config config = updateService.process(form);
 
-        return new JSONData(item);
+        return new JSONData(config);
     }
 
     /**

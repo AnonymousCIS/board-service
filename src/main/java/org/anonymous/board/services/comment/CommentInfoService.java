@@ -247,7 +247,6 @@ public class CommentInfoService {
 
             String direction = _sort[1];
 
-
             if (field.equals("deletedAt")) { // 유저가 삭제 최신순 정렬
 
                 query.orderBy(commentData.deletedAt.desc());

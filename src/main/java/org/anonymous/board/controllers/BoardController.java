@@ -89,6 +89,16 @@ public class BoardController {
                     @ExampleObject(name = "ALL", value = "ALL", description = "전체 공개 상태"),
                     @ExampleObject(name = "SECRET", value = "SECRET", description = "비밀 상태(관리자 & 작성자 조회 가능)"),
                     @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
+            }),
+            @Parameter(name = "gid", description = "파일 첨부용 Group ID"),
+            @Parameter(name = "post", description = "게시글 작성자", required = true),
+            @Parameter(name = "guestPw", description = "비회원 게시글일 경우 게시글 비밀번호"),
+            @Parameter(name = "subject", description = "게시글 제목", required = true),
+            @Parameter(name = "content", description = "게시글 내용", required = true),
+            @Parameter(name = "category", description = "게시글 분류", examples = {
+                    @ExampleObject(name = "일반", value = "일반", description = "기본 분류"),
+                    @ExampleObject(name = "질문", value = "질문", description = "질문 게시글 분류"),
+                    @ExampleObject(name = "정보공유", value = "정보공유", description = "정보성 게시글 분류")
             })
     })
     @PostMapping("/save")
@@ -120,6 +130,8 @@ public class BoardController {
      * @param seq
      * @return
      */
+    @Operation(summary = "게시글 단일 조회", description = "게시글 ID로 게시글을 검색해 단일 조회합니다.")
+    @Parameter(name = "seq", description = "게시글 ID", example = "1125")
     @GetMapping("/view/{seq}")
     public JSONData view(@PathVariable("seq") Long seq) {
 
@@ -136,6 +148,28 @@ public class BoardController {
      * @param bid
      * @return
      */
+    @Operation(summary = "게시글 목록 조회", description = "게시판 ID로 게시글 목록을 검색해 조회합니다.")
+    @Parameters({
+            @Parameter(name = "search", description = "게시글 목록 조회용"),
+            @Parameter(name = "bid", description = "게시판 ID", required = true, examples = {
+                    @ExampleObject(name = "notice", value = "notice"),
+                    @ExampleObject(name = "freetalk", value = "freetalk"),
+                    @ExampleObject(name = "FAQ", value = "FAQ"),
+                    @ExampleObject(name = "QNA", value = "QNA")
+            }),
+            @Parameter(name = "sort", description = "필드명_정렬방향, 검색 처리시 분해해서 사용", example = "viewCount_DESC"),
+            @Parameter(name = "email", description = "회원 이메일별 조회용"),
+            @Parameter(name = "category", description = "분류 조회용", examples = {
+                    @ExampleObject(name = "일반", value = "일반", description = "기본 분류"),
+                    @ExampleObject(name = "질문", value = "질문", description = "질문 게시글 분류"),
+                    @ExampleObject(name = "정보공유", value = "정보공유", description = "정보성 게시글 분류")
+            }),
+            @Parameter(name = "status", description = "게시글 상태별 조회용", examples = {
+                    @ExampleObject(name = "ALL", value = "ALL", description = "전체 공개 상태"),
+                    @ExampleObject(name = "SECRET", value = "SECRET", description = "비밀 상태(관리자 & 작성자 조회 가능)"),
+                    @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
+            })
+    })
     @GetMapping("/list/{bid}")
     public JSONData list(@PathVariable("bid") String bid, @ModelAttribute BoardSearch search) {
 
@@ -154,6 +188,15 @@ public class BoardController {
      * @param seqs
      * @return
      */
+    @Operation(summary = "게시글 상태 단일 & 목록 일괄 수정 처리", description = "게시글 상태를 단일 & 목록 일괄 수정합니다.")
+    @Parameters({
+            @Parameter(name = "seq", description = "게시글 ID"),
+            @Parameter(name = "status", description = "게시글 상태별 조회용", examples = {
+                    @ExampleObject(name = "ALL", value = "ALL", description = "전체 공개 상태"),
+                    @ExampleObject(name = "SECRET", value = "SECRET", description = "비밀 상태(관리자 & 작성자 조회 가능)"),
+                    @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
+            })
+    })
     @PatchMapping("/status")
     public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
 
@@ -170,13 +213,14 @@ public class BoardController {
      * @param seq
      * @return
      */
+    @Operation(summary = "게시글 조회수 업데이트 처리", description = "게시글 조회수 업데이트시 반영")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @GetMapping("/viewcount/{seq}")
     public JSONData viewCount(@PathVariable("seq") Long seq) {
 
-        viewUpdateService.process(seq);
+        long total = viewUpdateService.process(seq);
         
-        return new JSONData();
+        return new JSONData(total);
     }
 
     /**

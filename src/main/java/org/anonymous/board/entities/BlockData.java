@@ -1,12 +1,16 @@
 package org.anonymous.board.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.global.entities.BaseEntity;
 
 @Data
 @Entity
-public class BlockData {
+public class BlockData extends BaseEntity {
 
     @Id
     @GeneratedValue
