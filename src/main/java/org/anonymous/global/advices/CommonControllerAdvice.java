@@ -19,19 +19,34 @@ public class CommonControllerAdvice {
 
     private final Utils utils;
 
+    // Error 도 항상 동일한 형식(JSONData 형식)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<JSONData> errorHandler(Exception e) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 기본 에러 코드 500
 
+        // default Error Code = 500
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        // CommonException 에서 message 를 String, Map 으로 했으니 Object
         Object message = e.getMessage();
 
         if (e instanceof CommonException commonException) {
             status = commonException.getStatus();
 
+            /**
+             * ApiFileController Class 의
+             * if (errors.hasErrors()) {
+             *     throw new BadRequestException(utils.getErrorMessages(errors));
+             * }
+             */
             Map<String, List<String>> errorMessages = commonException.getErrorMessages();
+
             if (errorMessages != null) {
+
                 message = errorMessages;
+
             } else {
+                // ErrorCode 형태 판별 후 message 조회해서 message 만 뺴내서 반환
+                // message 형태일 경우 message 반환
                 message = commonException.isErrorCode() ? utils.getMessage((String)message) : message;
             }
         }
@@ -43,6 +58,7 @@ public class CommonControllerAdvice {
 
         e.printStackTrace();
 
+        // ★ 응답 Code & Body 상세 설정 ★
         return ResponseEntity.status(status).body(data);
     }
 }

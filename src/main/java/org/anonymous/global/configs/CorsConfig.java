@@ -11,6 +11,11 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Cross Origin Resource Sharing 정책
+ *
+ * 다른 출처간의 자원의 공유 정책
+ */
 @Configuration
 public class CorsConfig {
 

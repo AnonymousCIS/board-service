@@ -46,9 +46,9 @@ public class LoginFilter extends GenericFilterBean {
      * @param token
      */
     private void loginProcess(String token) {
-        if (!StringUtils.hasText(token)) {
-            return; // 토큰이 없는 일반 요청인 경우는 처리 X
-        }
+
+        // 토큰이 없는 일반 요청인 경우는 처리 X
+        if (!StringUtils.hasText(token)) return;
 
         /**
          * 1. 토큰이 있으면, member-service 인스턴스에서 회원 정보 조회
@@ -63,8 +63,11 @@ public class LoginFilter extends GenericFilterBean {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             ResponseEntity<JSONData> response = restTemplate.exchange(apiUrl, HttpMethod.GET, request, JSONData.class);
+
             JSONData jsonData = response.getBody();
+
             if (response.getStatusCode().is2xxSuccessful() && jsonData != null && jsonData.isSuccess()) { // 응답 성공시 처리
+
                 String json = om.writeValueAsString(jsonData.getData());
 
                 Member member = om.readValue(json, Member.class);
