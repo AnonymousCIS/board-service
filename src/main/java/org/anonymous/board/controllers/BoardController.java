@@ -174,7 +174,7 @@ public class BoardController {
 
 
     /**
-     * 게시글 번호로 공통 처리
+     * 게시글 번호로 개별 공통 처리
      *
      * Base Method
      *
@@ -188,22 +188,19 @@ public class BoardController {
     }
 
     /**
-     * 게시글 번호로 공통 처리
+     * 게시글 번호로 목록 공통 처리
      *
      * @param seqs
      * @param mode
      */
     private void commonProcess(List<Long> seqs, String mode) {
 
-        for (Long seq : seqs) {
-
-            // 게시판 권한 체크 - 조회, 수정, 삭제
-            authService.check(mode, seq);
-        }
+        // 게시판 권한 체크 - 조회, 수정, 삭제
+        authService.check(mode, seqs);
     }
 
     /**
-     * 게시판 아이디로 공통 처리
+     * 게시판 아이디로 개별 공통 처리
      *
      * @param bid
      * @param mode

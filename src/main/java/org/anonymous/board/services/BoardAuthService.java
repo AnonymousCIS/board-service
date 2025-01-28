@@ -185,4 +185,12 @@ public class BoardAuthService {
 
         check(mode, config.getBid(), seq);
     }
+
+    public void check(String mode, List<Long> seqs) {
+
+        for (Long seq : seqs) {
+
+            check(mode, seq);
+        }
+    }
 }
