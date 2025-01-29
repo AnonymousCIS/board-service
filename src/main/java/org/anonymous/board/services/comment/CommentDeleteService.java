@@ -38,10 +38,7 @@ public class CommentDeleteService {
 
         CommentData item = infoService.get(seq);
 
-        if (item == null) {
-
-            throw new CommentNotFoundException();
-        }
+        if (item == null) throw new CommentNotFoundException();
 
         item.setDeletedAt(LocalDateTime.now());
 
@@ -89,10 +86,7 @@ public class CommentDeleteService {
 
         CommentData item = infoService.get(seq);
 
-        if (item == null) {
-
-            throw new CommentNotFoundException();
-        }
+        if (item == null) throw new CommentNotFoundException();
 
         BoardData data = item.getData();
 

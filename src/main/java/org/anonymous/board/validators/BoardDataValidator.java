@@ -61,7 +61,7 @@ public class BoardDataValidator implements Validator, PasswordValidator {
 
         Long seq = form.getSeq();
 
-        if (mode == null && mode.equals("edit") && (seq == null || seq < 1L)) {
+        if (mode != null && mode.equals("edit") && (seq == null || seq < 1L)) {
 
             errors.rejectValue("seq", "NotNull");
         }

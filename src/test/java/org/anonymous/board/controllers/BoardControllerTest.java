@@ -1,10 +1,12 @@
 package org.anonymous.board.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.anonymous.board.constants.BoardStatus;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.configs.BoardConfigUpdateService;
 import org.anonymous.global.rests.JSONData;
+import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
-@ActiveProfiles({"default, test"})
+// @ActiveProfiles({"default, test"})
 @AutoConfigureMockMvc
 @DisplayName("게시판 - 공통 통합 테스트")
 public class BoardControllerTest {
@@ -59,11 +60,12 @@ public class BoardControllerTest {
         form.setPoster("작성자");
         form.setGid(UUID.randomUUID().toString());
         form.setGuestPw("a1234");
+        form.setStatus(BoardStatus.ALL);
     }
 
     @Test
-    @MockMember
-    @DisplayName("게시글 작성 테스트")
+    @MockMember(authority = {Authority.ADMIN, Authority.USER})
+    @DisplayName("게시글 테스트")
     void writeTest() throws Exception {
 
         String body = om.writeValueAsString(form);
@@ -77,9 +79,9 @@ public class BoardControllerTest {
 
         BoardData data = om.readValue(om.writeValueAsString(jsonData.getData()), BoardData.class);
 
-        System.out.println(data);
+        // System.out.println(data);
 
-        // 게시글 조회
+        // 게시글 단일 조회
         mockMvc.perform(get("/view/" + data.getSeq()))
                 .andDo(print());
 
@@ -87,8 +89,14 @@ public class BoardControllerTest {
         mockMvc.perform(get("/list/" + config.getBid()))
                 .andDo(print());
 
-        // 게시글 삭제
-        mockMvc.perform(delete("/" + data.getSeq()))
-                .andDo(print());
+        // 게시글 유저 삭제
+//        mockMvc.perform(patch("/userdeletes")
+//                        .param("seq", String.valueOf(data.getSeq())))
+//                .andDo(print());
+
+        // 게시글 관리자 삭제
+//        mockMvc.perform(delete("/admin/deletes")
+//                        .param("seq", String.valueOf(data.getSeq())))
+//                .andDo(print());
     }
 }

@@ -44,10 +44,7 @@ public class BoardDeleteService {
 
         BoardData item = infoService.get(seq);
 
-        if (item == null) {
-
-            throw new BoardDataNotFoundException();
-        }
+        if (item == null) throw new BoardDataNotFoundException();
 
         item.setDeletedAt(LocalDateTime.now());
 
@@ -96,10 +93,7 @@ public class BoardDeleteService {
 
         BoardData item = infoService.get(seq);
 
-        if (item != null) {
-
-            throw new BoardDataNotFoundException();
-        }
+        if (item == null) throw new BoardDataNotFoundException();
 
         /* 파일 삭제 처리 요청 S */
 

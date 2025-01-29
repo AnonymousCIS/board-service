@@ -220,7 +220,7 @@ public class BoardController {
      * @return
      */
     @Operation(summary = "게시글 삭제 단일 & 목록 일괄 처리", description = "게시글 ID로 게시글을 단일 & 목록 삭제합니다. 일반 사용자용 삭제이므로 DB에서 삭제되지 않고 DeletedAt을 현재 시간으로 부여합니다.")
-    @Parameter(name = "seq", description = "게글 ID")
+    @Parameter(name = "seq", description = "게시글 ID")
     @PatchMapping("/userdeletes")
     public JSONData userDeletes(@RequestParam("seq") List<Long> seqs) {
 
