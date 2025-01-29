@@ -37,8 +37,8 @@ public class BoardAdminControllerTest {
 
         form = new RequestConfig();
 
-        form.setBid("freetalk");
-        form.setName("자유게시판");
+        form.setBid("notice");
+        form.setName("공지사항");
     }
 
     @Test
@@ -49,13 +49,13 @@ public class BoardAdminControllerTest {
         String body = om.writeValueAsString(form);
 
         // 게시판 등록 & 수정
-        mockMvc.perform(post("/admin/config")
+        mockMvc.perform(post("/admin/config/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
-                        .andDo(print());
+                .andDo(print());
 
         // 게시판 목록 조회
-        mockMvc.perform(get("/admin/config"))
+        mockMvc.perform(get("/admin/config/list"))
                 .andDo(print());
     }
 }
