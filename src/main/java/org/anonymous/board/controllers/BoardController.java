@@ -46,6 +46,8 @@ public class BoardController {
 
     private final BoardViewUpdateService viewUpdateService;
 
+    private final BoardDeleteService deleteService;
+
     /**
      * 게시판 설정 단일 조회
      *
@@ -76,7 +78,7 @@ public class BoardController {
      * @param errors
      * @return
      */
-    @Operation(summary = "게시글 등록 & 수정 처리", description = "신규 게시글을 등록하거나 혹은 기존 게시글을 수정합니다.")
+    @Operation(summary = "게시글 작성 & 수정 처리", description = "신규 게시글을 작성하거나 혹은 기존 게시글을 수정합니다.")
     @Parameters({
             @Parameter(name = "form", description = "게시글 작성 양식"),
             @Parameter(name = "seq", description = "게시글 ID", required = true, example = "1125"),
@@ -91,8 +93,8 @@ public class BoardController {
                     @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
             }),
             @Parameter(name = "gid", description = "파일 첨부용 Group ID"),
-            @Parameter(name = "post", description = "게시글 작성자", required = true),
-            @Parameter(name = "guestPw", description = "비회원 게시글일 경우 게시글 비밀번호"),
+            @Parameter(name = "poster", description = "게시글 작성자", required = true),
+            @Parameter(name = "guestPw", description = "비회원 게시글일 경우 비회원 비밀번호"),
             @Parameter(name = "subject", description = "게시글 제목", required = true),
             @Parameter(name = "content", description = "게시글 내용", required = true),
             @Parameter(name = "category", description = "게시글 분류", examples = {
@@ -190,7 +192,7 @@ public class BoardController {
      */
     @Operation(summary = "게시글 상태 단일 & 목록 일괄 수정 처리", description = "게시글 상태를 단일 & 목록 일괄 수정합니다.")
     @Parameters({
-            @Parameter(name = "seq", description = "게시글 ID"),
+            @Parameter(name = "seq", description = "게시글 ID", example = "1125"),
             @Parameter(name = "status", description = "게시글 상태별 조회용", examples = {
                     @ExampleObject(name = "ALL", value = "ALL", description = "전체 공개 상태"),
                     @ExampleObject(name = "SECRET", value = "SECRET", description = "비밀 상태(관리자 & 작성자 조회 가능)"),
@@ -200,10 +202,32 @@ public class BoardController {
     @PatchMapping("/status")
     public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
 
-        commonProcess(seqs, "delete");
+        commonProcess(seqs, "edit");
 
         List<BoardData> items = statusService.process(seqs, status, "board");
         
+        return new JSONData(items);
+    }
+
+
+    /**
+     * 게시글 삭제
+     * 단일 & 목록 일괄 수정
+     *
+     * DB 삭제 X, 일반 유저 전용 삭제로 deleteAt 현재 시간으로 부여
+     *
+     * @param seqs
+     * @return
+     */
+    @Operation(summary = "게시글 삭제 단일 & 목록 일괄 처리", description = "게시글 ID로 게시글을 단일 & 목록 삭제합니다. 일반 사용자용 삭제이므로 DB에서 삭제되지 않고 DeletedAt을 현재 시간으로 부여합니다.")
+    @Parameter(name = "seq", description = "게글 ID")
+    @PatchMapping("/userdeletes")
+    public JSONData userDeletes(@RequestParam("seq") List<Long> seqs) {
+
+        commonProcess(seqs, "delete");
+
+        List<BoardData> items = deleteService.userDelete(seqs);
+
         return new JSONData(items);
     }
 
@@ -213,7 +237,8 @@ public class BoardController {
      * @param seq
      * @return
      */
-    @Operation(summary = "게시글 조회수 업데이트 처리", description = "게시글 조회수 업데이트시 반영")
+    @Operation(summary = "게시글 조회수 업데이트 처리", description = "게시글 조회수 업데이트시 반영 처리합니다.")
+    @Parameter(name = "seq", description = "게시글 ID", example = "1125")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @GetMapping("/viewcount/{seq}")
     public JSONData viewCount(@PathVariable("seq") Long seq) {
@@ -233,6 +258,11 @@ public class BoardController {
      * @param password
      * @return
      */
+    @Operation(summary = "비회원 비밀번호 검증", description = "비회원 게시글 작성 & 수정 & 삭제시 비회원 비밀번호 검증 합니다.")
+    @Parameters({
+            @Parameter(name = "seq", description = "게시글 ID", example = "1125"),
+            @Parameter(name = "password", description = "비회원 비밀번호", example = "_aA1234")
+    })
     @PostMapping("/password/{seq}")
     public ResponseEntity<Void> validateGuestPassword(@PathVariable("seq") Long seq, @RequestParam(name = "password", required = false) String password) {
 
