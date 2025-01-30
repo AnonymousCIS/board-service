@@ -90,9 +90,9 @@ public class BoardControllerTest {
                 .andDo(print());
 
         // 게시글 유저 삭제
-//        mockMvc.perform(patch("/userdeletes")
-//                        .param("seq", String.valueOf(data.getSeq())))
-//                .andDo(print());
+        mockMvc.perform(patch("/userdeletes")
+                        .param("seq", String.valueOf(data.getSeq())))
+                .andDo(print());
 
         // 게시글 관리자 삭제
 //        mockMvc.perform(delete("/admin/deletes")

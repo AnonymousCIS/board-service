@@ -34,6 +34,8 @@ public class AdminBoardController {
 
     private final Utils utils;
 
+    private final BoardStatusService statusService;
+
     private final BoardConfigInfoService infoService;
 
     private final BoardConfigValidator configValidator;
@@ -45,8 +47,6 @@ public class AdminBoardController {
     private final BoardDeleteService boardDeleteService;
 
     private final CommentDeleteService commentDeleteService;
-
-    private final BoardStatusService statusService;
 
     /**
      * 게시판 설정 등록 & 수정 처리
@@ -150,22 +150,18 @@ public class AdminBoardController {
     }
 
     /**
-     * 회원 전체 상태 변경 처리
+     * 차단 회원 컨텐츠 일괄 BLOCK 처리
      *
-     * - block || unblock
-     *
-     * - 게시글 & 댓글 BLOCK 처리
+     * - 게시글 & 댓글 모두 BLOCK 처리
      * - Member 도메인 쪽에서 요청할 주소
      *
-     * @param email
+     * @param email : 차단당한 회원의 이메일
      * @return
      */
     @PatchMapping("/block/{email}")
     public void block(@PathVariable String email) {
 
-        // List<BlockData> items = statusService
-
-        
+        statusService.process(email);
     }
 
     /**

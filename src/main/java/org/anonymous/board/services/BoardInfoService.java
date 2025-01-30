@@ -153,7 +153,7 @@ public class BoardInfoService {
 
         if (statuses != null && !statuses.isEmpty()) {
 
-            andBuilder.and(boardData.boardStatus.in(statuses));
+            andBuilder.and(boardData.domainStatus.in(statuses));
         }
 
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
@@ -163,11 +163,11 @@ public class BoardInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 게시글일 경우
-            andBuilder.and(boardData.boardStatus.ne(DomainStatus.SECRET)
+            andBuilder.and(boardData.domainStatus.ne(DomainStatus.SECRET)
                     .or(boardData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 게시글일 경우
-            andBuilder.and(boardData.boardStatus.ne(DomainStatus.BLOCK));
+            andBuilder.and(boardData.domainStatus.ne(DomainStatus.BLOCK));
         }
 
         /**

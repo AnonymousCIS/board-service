@@ -104,11 +104,11 @@ public class CommentInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 댓글일 경우
-            andBuilder.and(commentData.boardStatus.ne(DomainStatus.SECRET)
+            andBuilder.and(commentData.domainStatus.ne(DomainStatus.SECRET)
                     .or(commentData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 댓글일 경우
-            andBuilder.and(commentData.boardStatus.ne(DomainStatus.BLOCK));
+            andBuilder.and(commentData.domainStatus.ne(DomainStatus.BLOCK));
         }
 
         // 댓글의 부모인 게시글의 등록번호(seq)로 조건
@@ -162,7 +162,7 @@ public class CommentInfoService {
 
         if (statuses != null && !statuses.isEmpty()) {
 
-            andBuilder.and(commentData.boardStatus.in(statuses));
+            andBuilder.and(commentData.domainStatus.in(statuses));
         }
 
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
@@ -172,11 +172,11 @@ public class CommentInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 게시글일 경우
-            andBuilder.and(commentData.boardStatus.ne(DomainStatus.SECRET)
+            andBuilder.and(commentData.domainStatus.ne(DomainStatus.SECRET)
                     .or(commentData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 게시글일 경우
-            andBuilder.and(commentData.boardStatus.ne(DomainStatus.BLOCK));
+            andBuilder.and(commentData.domainStatus.ne(DomainStatus.BLOCK));
         }
 
         /**

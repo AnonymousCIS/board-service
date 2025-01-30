@@ -11,6 +11,7 @@ import org.anonymous.board.repositories.BlockDataRepository;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.repositories.CommentDataRepository;
 import org.anonymous.global.exceptions.BadRequestException;
+import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
@@ -55,7 +56,8 @@ public class BoardStatusService {
         // 잘못된 요청
         if ((!mode.equals("board") && !mode.equals("comment")) || seq == null || status == null) throw new BadRequestException();
 
-        // if (!memberUtil.isAdmin()) throw new UnAuthorizedException();
+        // BLOCK 으로 변경요청시 관리자가 아니면 권한 없음 예외
+        if (status.equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
         T data = null;
 
@@ -63,7 +65,9 @@ public class BoardStatusService {
 
             BoardData boardData = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
 
-            // 게시글 찾아서 현태 스테이터스가 BLOCK이고 && !isAdmin이면 UNat머시기 권한
+            // 현태 스테이터스가 BLOCK && !isAdmin 이면 권한 없음 예외
+            // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
+            if (boardData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
             boardData.setDomainStatus(status);
 
@@ -74,6 +78,10 @@ public class BoardStatusService {
         } else if (mode.equals("comment")) {
 
             CommentData commentData = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
+
+            // 현태 스테이터스가 BLOCK && !isAdmin 이면 권한 없음 예외
+            // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
+            if (commentData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
             commentData.setDomainStatus(status);
 
@@ -149,6 +157,21 @@ public class BoardStatusService {
         }
 
         return processed;
+    }
+
+    /**
+     * 회원 이메일로 모든 컨텐츠 일괄 BLOCK 처리
+     *
+     * @param email
+     */
+    public void process(String email) {
+
+        List<BlockData> items = blockDataRepository.findByEmail(email);
+
+        for (BlockData item : items) {
+
+            process(item.getSeq(), DomainStatus.BLOCK, item.getType());
+        }
     }
 }
 

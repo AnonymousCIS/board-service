@@ -3,12 +3,14 @@ package org.anonymous.board.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.Data;
 import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseEntity;
 
 @Data
 @Entity
+@IdClass(BlockDataId.class)
 public class BlockData extends BaseEntity {
 
     @Id
