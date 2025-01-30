@@ -121,6 +121,8 @@ public class BoardStatusService {
 
             String token = utils.getAuthToken();
 
+            // String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAdGVzdC5vcmciLCJhdXRob3JpdGllcyI6IkFETUlOfHxVU0VSIiwiZXhwIjoxNzM4MjQ1NDQ4fQ.1B2lwAevrJWAbTFEO9ZtQlYmJpRRNSZJF8syn09Y54LUoXAtDRScgLQhoQ9wOsVpGy89p990uf8tl_DswYOK1Q";
+
             HttpHeaders headers = new HttpHeaders();
 
             if (StringUtils.hasText(token)) headers.setBearerAuth(token);
