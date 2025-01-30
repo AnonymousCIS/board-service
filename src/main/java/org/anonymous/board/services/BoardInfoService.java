@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.controllers.BoardSearch;
 import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
@@ -58,9 +58,9 @@ public class BoardInfoService {
 
         BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
-        if (item.getBoardStatus().equals(BoardStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+        if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-        if (item.getBoardStatus().equals(BoardStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+        if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
 
         addInfo(item, true);
 
@@ -149,7 +149,7 @@ public class BoardInfoService {
         }
 
         // 상태별 검색 - 관리자용
-        List<BoardStatus> statuses = search.getStatus();
+        List<DomainStatus> statuses = search.getStatus();
 
         if (statuses != null && !statuses.isEmpty()) {
 
@@ -163,11 +163,11 @@ public class BoardInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 게시글일 경우
-            andBuilder.and(boardData.boardStatus.ne(BoardStatus.SECRET)
+            andBuilder.and(boardData.boardStatus.ne(DomainStatus.SECRET)
                     .or(boardData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 게시글일 경우
-            andBuilder.and(boardData.boardStatus.ne(BoardStatus.BLOCK));
+            andBuilder.and(boardData.boardStatus.ne(DomainStatus.BLOCK));
         }
 
         /**

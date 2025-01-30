@@ -1,7 +1,7 @@
 package org.anonymous.board.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.services.BoardUpdateService;
@@ -52,7 +52,7 @@ public class CommentControllerTest {
         _boardData.setPoster("작성자1");
         _boardData.setGid(UUID.randomUUID().toString());
         _boardData.setGuestPw("a1234");
-        _boardData.setStatus(BoardStatus.ALL);
+        _boardData.setStatus(DomainStatus.ALL);
 
         boardData = boardUpdateService.process(_boardData);
 

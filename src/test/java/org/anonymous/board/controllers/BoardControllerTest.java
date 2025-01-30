@@ -1,7 +1,7 @@
 package org.anonymous.board.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.configs.BoardConfigUpdateService;
@@ -60,7 +60,7 @@ public class BoardControllerTest {
         form.setPoster("작성자");
         form.setGid(UUID.randomUUID().toString());
         form.setGuestPw("a1234");
-        form.setStatus(BoardStatus.ALL);
+        form.setStatus(DomainStatus.ALL);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package org.anonymous.board.constants;
 
-public enum BoardStatus {
+public enum DomainStatus {
 
     ALL, // 모두 조회 가능
     

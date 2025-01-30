@@ -11,6 +11,7 @@ import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.BoardDeleteService;
+import org.anonymous.board.services.BoardStatusService;
 import org.anonymous.board.services.comment.CommentDeleteService;
 import org.anonymous.board.services.configs.BoardConfigDeleteService;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
@@ -44,6 +45,8 @@ public class AdminBoardController {
     private final BoardDeleteService boardDeleteService;
 
     private final CommentDeleteService commentDeleteService;
+
+    private final BoardStatusService statusService;
 
     /**
      * 게시판 설정 등록 & 수정 처리
@@ -144,6 +147,25 @@ public class AdminBoardController {
         List<Config> items = updateService.process(form);
 
         return new JSONData(items);
+    }
+
+    /**
+     * 회원 전체 상태 변경 처리
+     *
+     * - block || unblock
+     *
+     * - 게시글 & 댓글 BLOCK 처리
+     * - Member 도메인 쪽에서 요청할 주소
+     *
+     * @param email
+     * @return
+     */
+    @PatchMapping("/block/{email}")
+    public void block(@PathVariable String email) {
+
+        // List<BlockData> items = statusService
+
+        
     }
 
     /**

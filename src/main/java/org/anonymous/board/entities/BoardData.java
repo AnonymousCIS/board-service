@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseMemberEntity;
 
 import java.io.Serializable;
@@ -77,7 +77,7 @@ public class BoardData extends BaseMemberEntity implements Serializable {
     private String category;
 
     @Enumerated(EnumType.STRING)
-    private BoardStatus boardStatus;
+    private DomainStatus domainStatus;
 
     @JsonIgnore
     @ToString.Exclude

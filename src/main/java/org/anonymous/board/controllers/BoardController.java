@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.services.*;
@@ -200,7 +200,7 @@ public class BoardController {
             })
     })
     @PatchMapping("/status")
-    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
+    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") DomainStatus status) {
 
         commonProcess(seqs, "edit");
 

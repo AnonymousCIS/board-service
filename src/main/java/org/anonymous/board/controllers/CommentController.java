@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.services.BoardAuthService;
 import org.anonymous.board.services.BoardStatusService;
@@ -174,7 +174,7 @@ public class CommentController {
             })
     })
     @PatchMapping("/status")
-    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") BoardStatus status) {
+    public JSONData status(@RequestParam("seq") List<Long> seqs, @RequestParam("status") DomainStatus status) {
 
         commonProcess(seqs);
 

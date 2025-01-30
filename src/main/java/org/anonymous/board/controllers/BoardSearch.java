@@ -1,7 +1,7 @@
 package org.anonymous.board.controllers;
 
 import lombok.Data;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.paging.CommonSearch;
 
 import java.util.List;
@@ -24,5 +24,5 @@ public class BoardSearch extends CommonSearch {
 
     // 상태별 게시글 조회용
     // 관리자쪽에서 사용
-    private List<BoardStatus> status;
+    private List<DomainStatus> status;
 }
