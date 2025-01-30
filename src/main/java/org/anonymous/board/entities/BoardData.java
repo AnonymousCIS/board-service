@@ -26,6 +26,8 @@ public class BoardData extends BaseMemberEntity implements Serializable {
     @GeneratedValue
     private Long seq;
 
+    @JsonIgnore
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bid")
     private Config config;
