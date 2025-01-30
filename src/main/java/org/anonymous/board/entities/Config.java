@@ -25,7 +25,7 @@ public class Config extends BaseMemberEntity implements Serializable {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "bid", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
     private List<BoardData> boardData;
 
     @Lob

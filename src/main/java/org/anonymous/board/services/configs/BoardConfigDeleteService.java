@@ -29,7 +29,7 @@ public class BoardConfigDeleteService {
 
         Config config = configRepository.findById(bid).orElseThrow(ConfigNotFoundException::new);
 
-        if (config == null) {
+        if (config != null) {
 
             configRepository.delete(config);
 

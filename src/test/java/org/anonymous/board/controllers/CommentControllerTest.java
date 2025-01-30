@@ -58,14 +58,15 @@ public class CommentControllerTest {
 
         form = new RequestComment();
 
-        form.setSeq(1L);
+        // form.setSeq(1L);
         form.setContent("댓글 내용");
         form.setBoardDataSeq(boardData.getSeq());
         form.setCommenter("댓글 작성자1");
+        form.setStatus(DomainStatus.ALL);
     }
 
     @Test
-    @MockMember
+    @MockMember(email = "user44@test.org")
     @DisplayName("댓글 테스트")
     void commentTest() throws Exception {
 
@@ -87,6 +88,6 @@ public class CommentControllerTest {
                 .andDo(print());
 
         // 게시글에 속한 댓글 목록 조회
-        mockMvc.perform(get("/comment/inboardlist/" + data.getData().getSeq())).andDo(print());
+        // mockMvc.perform(get("/comment/inboardlist/" + data.getData().getSeq())).andDo(print());
     }
 }

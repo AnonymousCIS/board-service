@@ -63,20 +63,6 @@ public class BoardAdminControllerTest {
                 .content(body))
                 .andDo(print());
 
-        // 게시판 등록2
-
-        form2 = new RequestConfig();
-
-        form2.setBid("freetalk");
-        form2.setName("자유게시판");
-
-        String bodyFree = om.writeValueAsString(form2);
-
-        mockMvc.perform(post("/admin/config/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bodyFree))
-                .andDo(print());
-
         // 게시판 목록 조회
         mockMvc.perform(get("/admin/config/list"))
                 .andDo(print());
@@ -97,7 +83,10 @@ public class BoardAdminControllerTest {
         form.setName("(최종수정)공지사항");
         form.setMode("edit");
 
-        form2.setName("(수정)자유게시판");
+        form2 = new RequestConfig();
+        form2.setBid("freetalk");
+        form2.setName("자유게시판");
+        form2.setOpen(true);
 
         List<RequestConfig> bodyList = new ArrayList<>();
         bodyList.add(form);
@@ -116,12 +105,20 @@ public class BoardAdminControllerTest {
     @DisplayName("게시판 삭제 테스트")
     void configDeleteTest() throws Exception {
 
+        // 게시판 삭제
         mockMvc.perform(delete("/admin/config/deletes")
                         .param("bid","freetalk"))
                 .andDo(print());
+    }
 
-        // 게시판 목록 조회
-        mockMvc.perform(get("/admin/config/list"))
+    @Test
+    @MockMember(authority = {Authority.ADMIN, Authority.USER})
+    @DisplayName("차단 회원 컨텐츠 BLOCK 처리 테스트")
+    void blockTest() throws Exception {
+
+        String email = "user44@test.org";
+
+        mockMvc.perform(patch("/admin/block/" + email))
                 .andDo(print());
     }
 

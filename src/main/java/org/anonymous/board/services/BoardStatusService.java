@@ -125,11 +125,11 @@ public class BoardStatusService {
 
             if (StringUtils.hasText(token)) headers.setBearerAuth(token);
 
-            HttpEntity<String> request = new HttpEntity<>(headers);
+            HttpEntity<BlockData> request = new HttpEntity<>(headers);
 
-            String apiUrl = utils.serviceUrl("member-service", "/admin/status/" + form);
+            String apiUrl = utils.serviceUrl("member-service", "/admin/status");
 
-            ResponseEntity<String> item = restTemplate.exchange(apiUrl, HttpMethod.PATCH, request, String.class);
+            ResponseEntity<BlockData> item = restTemplate.exchange(apiUrl, HttpMethod.PATCH, request, BlockData.class);
 
             blockDataRepository.saveAndFlush(form);
         }
@@ -166,11 +166,18 @@ public class BoardStatusService {
      */
     public void process(String email) {
 
-        List<BlockData> items = blockDataRepository.findByEmail(email);
+        List<BoardData> boardItems = boardDataRepository.findAllByCreatedBy(email);
 
-        for (BlockData item : items) {
+        for (BoardData item : boardItems) {
 
-            process(item.getSeq(), DomainStatus.BLOCK, item.getType());
+            process(item.getSeq(), DomainStatus.BLOCK, "board");
+        }
+
+        List<CommentData> commentItems = commentDataRepository.findAllByCreatedBy(email);
+
+        for (CommentData item : commentItems) {
+
+            process(item.getSeq(), DomainStatus.BLOCK, "comment");
         }
     }
 }
