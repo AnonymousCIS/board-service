@@ -163,7 +163,7 @@ public class AdminBoardController {
     @Parameter(name = "email", description = "차단 회원 이메일")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/block/{email}")
-    public void block(@PathVariable String email) {
+    public void block(@PathVariable("email") String email) {
 
         statusService.process(email);
     }

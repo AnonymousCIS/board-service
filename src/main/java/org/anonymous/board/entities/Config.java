@@ -1,7 +1,9 @@
 package org.anonymous.board.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.anonymous.global.entities.BaseMemberEntity;
 import org.anonymous.member.contants.Authority;
 
@@ -20,6 +22,11 @@ public class Config extends BaseMemberEntity implements Serializable {
     private String name;
 
     private boolean open;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "config", cascade = CascadeType.REMOVE)
+    private List<BoardData> boardData;
 
     @Lob
     private String category;

@@ -106,7 +106,7 @@ public class Utils {
      * @param url
      * @return
      */
-    public String  serviceUrl(String serviceId, String url) {
+    public String serviceUrl(String serviceId, String url) {
         try {
             List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
 
