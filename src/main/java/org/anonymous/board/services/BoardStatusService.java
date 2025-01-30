@@ -65,7 +65,7 @@ public class BoardStatusService {
 
             BoardData boardData = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
 
-            // 현태 스테이터스가 BLOCK && !isAdmin 이면 권한 없음 예외
+            // 게시글의 현재 DomainStatus 가 BLOCK && !isAdmin 이면 권한 없음 예외
             // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
             if (boardData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
@@ -79,7 +79,7 @@ public class BoardStatusService {
 
             CommentData commentData = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
 
-            // 현태 스테이터스가 BLOCK && !isAdmin 이면 권한 없음 예외
+            // 댓글의 현재 DomainStatus 가 BLOCK && !isAdmin 이면 권한 없음 예외
             // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
             if (commentData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
