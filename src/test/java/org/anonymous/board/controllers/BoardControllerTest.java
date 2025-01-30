@@ -66,7 +66,7 @@ public class BoardControllerTest {
     @Test
     @MockMember(authority = {Authority.ADMIN, Authority.USER})
     @DisplayName("게시글 테스트")
-    void writeTest() throws Exception {
+    void boardDataTest() throws Exception {
 
         String body = om.writeValueAsString(form);
 

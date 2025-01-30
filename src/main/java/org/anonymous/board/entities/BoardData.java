@@ -14,6 +14,10 @@ import java.util.List;
 @Entity
 @Table(indexes = {
         @Index(name = "idx_bd_created_at", columnList = "createdAt DESC"),
+        @Index(name = "idx_bd_bid", columnList = "bid"),
+        @Index(name = "idx_bd_category", columnList = "category"),
+        @Index(name = "idx_bd_status", columnList = "domainStatus"),
+        @Index(name = "idx_bd_subject", columnList = "subject"),
         @Index(name = "idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
 })
 public class BoardData extends BaseMemberEntity implements Serializable {

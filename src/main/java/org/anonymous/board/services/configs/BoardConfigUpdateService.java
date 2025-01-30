@@ -74,6 +74,7 @@ public class BoardConfigUpdateService {
         config.setCommentAuthority(Objects.requireNonNullElse(form.getCommentAuthority(), Authority.ALL));
 
         String locationAfterWriting = form.getLocationAfterWriting();
+
         config.setLocationAfterWriting(StringUtils.hasText(locationAfterWriting) ? locationAfterWriting : "list");
 
         config.setListUnderView(form.isListUnderView());

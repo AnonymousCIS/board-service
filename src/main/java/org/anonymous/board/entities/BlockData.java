@@ -1,9 +1,6 @@
 package org.anonymous.board.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseEntity;
@@ -11,12 +8,17 @@ import org.anonymous.global.entities.BaseEntity;
 @Data
 @Entity
 @IdClass(BlockDataId.class)
+@Table(indexes = {
+        @Index(name = "idx_block_created_at", columnList = "createdAt DESC"),
+        @Index(name = "idx_block_email", columnList = "email")
+})
 public class BlockData extends BaseEntity {
 
     @Id
     private Long seq;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DomainStatus status;
 
     // 차단 컨텐츠 타입

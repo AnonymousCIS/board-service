@@ -21,6 +21,7 @@ import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.rests.JSONData;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -160,6 +161,7 @@ public class AdminBoardController {
      */
     @Operation(summary = "차단당한 회원 컨텐츠 일괄 BLOCK 처리", description = "회원 이메일로 해당 회원의 모든 컨텐츠(게시글 & 댓글)를 BLOCK 처리해 숨김처리합니다.")
     @Parameter(name = "email", description = "차단 회원 이메일")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/block/{email}")
     public void block(@PathVariable String email) {
 
