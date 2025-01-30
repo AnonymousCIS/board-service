@@ -3,6 +3,7 @@ package org.anonymous.board.controllers;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.anonymous.board.constants.DomainStatus;
 
 @Data
 public class RequestBoardData {
@@ -11,6 +12,8 @@ public class RequestBoardData {
     private Long seq;
 
     private String mode;
+
+    private DomainStatus status;
 
     // 게시판 ID
     @NotBlank

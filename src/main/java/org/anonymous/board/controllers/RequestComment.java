@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.anonymous.board.constants.DomainStatus;
 
 @Data
 public class RequestComment {
@@ -11,6 +12,8 @@ public class RequestComment {
     private String mode;
 
     private Long seq;
+
+    private DomainStatus status;
 
     // 원 게시글 번호
     @NotNull

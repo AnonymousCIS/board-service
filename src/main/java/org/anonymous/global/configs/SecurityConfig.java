@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebSecurity // 기본 보안 정책 활성화
-@EnableMethodSecurity // @PreAuthorize, @PostAuthorize
+@EnableWebSecurity // 기본 보안 정책 활성화 - 비정상적인 요청시 밴 등등
+@EnableMethodSecurity // @PreAuthorize, @PrePostEnabled 활성화, 특정 처리 메서드 단위에서 권한 정책 설정
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -27,28 +27,49 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        /*
-         SessionCreationPolicy
-            - ALWAYS : 서버가 시작되었을때 부터 세션 생성, 세션 아이디
-            - IF_REQUIRED : 세션이 필요한 시점에 세션 을 생성(기본값)
-            - NEVER : 세션 생성 X, 기존에 세션이 존재하면 그거는 사용
-            - STATELESS : 세션 생성 X, 기본 생성된 세션도 사용 X
+        /**
+         * Token 인증 방식은 Session 을 사용하지 않기때문에 추가한 설정
+         *
+         * SessionCreationPolicy
+         * - ALWAYS : 서버가 시작 되었을때부터 Session 을 Cookie 에 생성, Session ID 바로 조회 가능
+         * - IF_REQUIRED : Session 이 필요한 시점에 Session 을 Cookie 에 생성 (default 값)
+         * - NEVER : Session 생성 X, 기존 생성된 Session 이 존재하는 경우 사용
+         * - STATELESS : Session 생성 X, 기존 생성된 Session 도 사용 X
          */
-
         http.csrf(c -> c.disable())
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // .addFilterAfter() // 특정 Filter 의 앞에
+                // .addFilterBefore() // 특정 Filter 의 뒤에
+                // .addFilterAt() // 끝에
+
+                // UsernamePasswordAuthenticationFilter (Spring Security 기본)
+                // UserName & Password 로 로그인 하는 필터
+                // 항상 UsernamePasswordAuthenticationFilter 앞에 corsFilter & loginFilter 동작해야함
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // 인증 실패 예외 발생시
                 .exceptionHandling(c -> {
                    c.authenticationEntryPoint((req, res, e) -> {
+
                        res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+
                    }); // 미로그인 상태에서 접근 한 경우
                    c.accessDeniedHandler((req, res, e) -> {
+
                        res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+
                    }); // 로그인 후 권한이 없는 경우
                 })
+
+                // 미로그인시 접근 가능한 패턴
                 .authorizeHttpRequests(c -> {
+
+                    // 관리자 접근 가능 패턴
                    c.requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+
+                           // 나머지는 아무 인증, 미로그인도 접근 가능
                            .anyRequest().permitAll();
                 });
 

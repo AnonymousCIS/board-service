@@ -6,14 +6,17 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.controllers.BoardSearch;
 import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.entities.QBoardData;
+import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
+import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -53,7 +56,11 @@ public class BoardInfoService {
      */
     public BoardData get(Long seq) {
 
-        BoardData item = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
+        BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
+
+        if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+
+        if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
 
         addInfo(item, true);
 
@@ -125,6 +132,8 @@ public class BoardInfoService {
 
         QBoardData boardData = QBoardData.boardData;
 
+        QCommentData commentData = QCommentData.commentData;
+
         // 게시판 ID (bid) 검색, 모아보기 기능도 있기때문에 List 형태
         if (bids != null && !bids.isEmpty()) {
 
@@ -139,6 +148,28 @@ public class BoardInfoService {
             andBuilder.and(boardData.category.in(categories));
         }
 
+        // 상태별 검색 - 관리자용
+        List<DomainStatus> statuses = search.getStatus();
+
+        if (statuses != null && !statuses.isEmpty()) {
+
+            andBuilder.and(boardData.domainStatus.in(statuses));
+        }
+
+        // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
+        if (!memberUtil.isAdmin()) {
+
+            // ne = eq 반대, Not Equal
+            // dsl 문은 ! 사용 불가
+
+            // 비밀 게시글일 경우
+            andBuilder.and(boardData.domainStatus.ne(DomainStatus.SECRET)
+                    .or(boardData.createdBy.eq(memberUtil.getMember().getEmail())));
+
+            // 관리자 차단 게시글일 경우
+            andBuilder.and(boardData.domainStatus.ne(DomainStatus.BLOCK));
+        }
+
         /**
          * 키워드 검색
          *
@@ -148,8 +179,7 @@ public class BoardInfoService {
          * CONTENT : 내용
          * SUBJECT_CONTENT : 제목 + 내용
          * POSTER : 작성자 + 이메일 + 닉네임
-         *
-         * 추후 댓글(COMMENT) 추가?
+         * COMMENT : 댓글 내용
          */
         String sopt = search.getSopt();
         String skey = search.getSkey();
@@ -163,6 +193,7 @@ public class BoardInfoService {
             StringExpression subject = boardData.subject;
             StringExpression content = boardData.content;
             StringExpression poster = boardData.poster.concat(boardData.createdBy);
+            StringExpression comment = commentData.content;
 
             StringExpression condition = null;
 
@@ -182,7 +213,12 @@ public class BoardInfoService {
 
                 condition = poster;
 
-            } else { // 통합 검색
+            } else if (sopt.equals("COMMENT")) { // 댓글 내용 검색
+
+                condition = comment;
+            }
+
+            else { // 통합 검색
 
                 condition = subject.concat(content).concat(poster);
             }
@@ -191,7 +227,7 @@ public class BoardInfoService {
         }
 
         // 회원 이메일로 검색
-        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany는 자주 쓰이지 않음
+        // OneToMany 안쓰는 이유 : Page 때문.. 생각보다 OneToMany 는 자주 쓰이지 않음
         List<String> emails = search.getEmail();
 
         if (emails != null && !emails.isEmpty()) {
@@ -202,6 +238,8 @@ public class BoardInfoService {
 
         JPAQuery<BoardData> query = queryFactory.selectFrom(boardData)
                 .leftJoin(boardData.config)
+                .fetchJoin()
+                .leftJoin(boardData.comment, commentData)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
@@ -349,7 +387,6 @@ public class BoardInfoService {
      * @param item
      */
     private void addInfo(BoardData item, boolean isView) {
-
         /* 이전 & 다음 게시글 S */
 
         // 게시글 단일 상세조회일 경우에만 이전 & 다음 게시글 조회

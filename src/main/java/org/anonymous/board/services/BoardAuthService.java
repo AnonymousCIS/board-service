@@ -82,10 +82,10 @@ public class BoardAuthService {
          * mode 값
          *
          * write & list / bid 체크
-         * edit & view / seq 체크
+         * edit & view & status / seq 체크
          *
          */
-        // 게시글 작성 & 목록 & 조회 & 수정(삭제) 권한 체크
+        // 게시글 작성 & 목록 & 조회 & 수정 & 상태 변경 권한 체크
         Authority authority = null;
 
         // false 일 경우 AlertBackException
@@ -104,10 +104,10 @@ public class BoardAuthService {
         } else if (List.of("edit", "delete").contains(mode)) {
             /**
              * 1. 회원 게시글인 경우
-             *      작성한 회원 본인만 수정 & 삭제 가능
+             *      작성한 회원 본인만 수정 & 삭제 상태 변경 가능
              *
              * 2. 비회원 게시글인 경우
-             *      비회원 비밀번호 확인이 완료된 경우 수정 & 삭제 가능
+             *      비회원 비밀번호 확인이 완료된 경우 수정 & 삭제 상태 변경 가능
              */
             BoardData item = infoService.get(seq);
 
@@ -115,12 +115,12 @@ public class BoardAuthService {
 
             if (createdBy == null) { // 비회원 게시글
                 /**
-                 * 비회원 게시글이 인증된 경우 = Session Key(config_게시글번호)가 존재
+                 * 비회원 게시글이 인증된 경우 = Session Key(board_게시글번호)가 존재
                  * 인증이 되지 않은 경우 GuestPasswordCheckException 발생 -> 비밀번호 확인 절차
                  */
 
                 // 사용자별로 다르게 Redis 에 저장
-                if (utils.getValue(utils.getUserHash() + "_config_" + seq) == null) {
+                if (utils.getValue(utils.getUserHash() + "_board_" + seq) == null) {
 
                     utils.saveValue(utils.getUserHash() + "_seq", seq);
 
@@ -128,12 +128,12 @@ public class BoardAuthService {
                 }
 
                 // 미로그인 상태 || 로그인 상태이지만 게시글 작성자가 아닐 경우
-            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 가능 통제
+            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글 - 작성한 회원 본인만 수정 & 삭제 상태 변경 가능 통제
 
                 isVerified = false;
             }
 
-        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제
+        } else if (mode.equals("comment")) { // 댓글 수정 & 삭제 상태 변경
 
             String commenter = comment.getCreatedBy();
 
@@ -184,5 +184,13 @@ public class BoardAuthService {
         Config config = item.getConfig();
 
         check(mode, config.getBid(), seq);
+    }
+
+    public void check(String mode, List<Long> seqs) {
+
+        for (Long seq : seqs) {
+
+            check(mode, seq);
+        }
     }
 }

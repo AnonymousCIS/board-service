@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.anonymous.board.constants.BoardStatus;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseMemberEntity;
 
 import java.io.Serializable;
@@ -14,6 +14,10 @@ import java.util.List;
 @Entity
 @Table(indexes = {
         @Index(name = "idx_bd_created_at", columnList = "createdAt DESC"),
+        @Index(name = "idx_bd_bid", columnList = "bid"),
+        @Index(name = "idx_bd_category", columnList = "category"),
+        @Index(name = "idx_bd_status", columnList = "domainStatus"),
+        @Index(name = "idx_bd_subject", columnList = "subject"),
         @Index(name = "idx_bd_notice_created_at", columnList = "notice DESC, createdAt DESC")
 })
 public class BoardData extends BaseMemberEntity implements Serializable {
@@ -77,13 +81,12 @@ public class BoardData extends BaseMemberEntity implements Serializable {
     private String category;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10, nullable = false)
-    BoardStatus boardStatus;
+    private DomainStatus domainStatus;
 
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "data", cascade = CascadeType.REMOVE)
-    List<CommentData> comment;
+    private List<CommentData> comment;
 
     // 이전 게시글
     @Transient

@@ -6,7 +6,6 @@ import org.anonymous.member.contants.Authority;
 
 @Data
 public class RequestConfig {
-
     private String mode;
 
     @NotBlank

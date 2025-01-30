@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseMemberEntity;
 
 import java.io.Serializable;
@@ -16,15 +17,13 @@ public class CommentData extends BaseMemberEntity implements Serializable {
     @Id @GeneratedValue
     private Long seq;
 
-    // 한개의 게시글에 여러 댓글
-    // 🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅
-    // 프론트 처리? 불필요?
-    // 게시글 쪽에서는 Cascade REMOVE 때문에 OneToMany 사용한것 연관
-    // 🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅🍅
-     @JsonIgnore
-     @ToString.Exclude
-     @ManyToOne(fetch = FetchType.LAZY)
-     private BoardData data;
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BoardData data;
+
+    @Enumerated(EnumType.STRING)
+    private DomainStatus domainStatus;
 
     // 작성자
     @Column(length = 40, nullable = false)

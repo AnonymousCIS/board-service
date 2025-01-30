@@ -20,11 +20,13 @@ public class MemberUtil {
         return isLogin() && getMember().get_authorities().stream().anyMatch(a -> a == Authority.ADMIN);
     }
 
-    // 로그인 회원 정보 조회
+    // 현재 로그인한 회원 정보 조회
     public Member getMember() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication != null && authentication.getPrincipal() instanceof Member) {
+
             return (Member) authentication.getPrincipal();
         }
 

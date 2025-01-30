@@ -15,13 +15,16 @@ import java.util.List;
 public class Member implements UserDetails {
 
     private Long seq;
+
     private String email;
+
     private String name;
 
     private List<Authority> _authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return _authorities == null || _authorities.isEmpty()
                 ? List.of()
                 : _authorities.stream().map(s -> new SimpleGrantedAuthority(s.name())).toList();
