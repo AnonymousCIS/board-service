@@ -172,8 +172,8 @@ public class BoardController {
                     @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
             })
     })
-    @GetMapping("/list/{bid}")
-    public JSONData list(@PathVariable("bid") String bid, @ModelAttribute BoardSearch search) {
+    @GetMapping({"/list", "/list/{bid}"})
+    public JSONData list(@PathVariable(name="bid", required = false) String bid, @ModelAttribute BoardSearch search) {
 
         commonProcess(bid, "list");
 

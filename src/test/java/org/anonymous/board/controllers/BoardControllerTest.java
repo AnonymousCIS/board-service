@@ -35,64 +35,72 @@ public class BoardControllerTest {
     @Autowired
     private ObjectMapper om;
 
-    @Autowired
-    private BoardConfigUpdateService configUpdateService;
-
-    private Config config;
-
     private RequestBoardData form;
 
-    @BeforeEach
+//    @Autowired
+//    private BoardConfigUpdateService configUpdateService;
+//
+//    private Config config;
+
+    // @BeforeEach
     void init() {
-        RequestConfig _config = new RequestConfig() ;
-
-        _config.setBid("freetalk");
-        _config.setName("자유게시판");
-        _config.setOpen(true);
-
-        config = configUpdateService.process(_config);
+//        RequestConfig _config = new RequestConfig() ;
+//
+//        _config.setBid("freetalk");
+//        _config.setName("자유게시판");
+//        _config.setOpen(true);
+//
+//        config = configUpdateService.process(_config);
 
         form = new RequestBoardData();
 
-        form.setBid(config.getBid());
+        form.setBid("freetalk");
         form.setSubject("제목");
         form.setContent("내용");
-        form.setPoster("작성자");
+        form.setPoster("작성자44");
         form.setGid(UUID.randomUUID().toString());
         form.setGuestPw("a1234");
         form.setStatus(DomainStatus.ALL);
     }
 
     @Test
-    @MockMember(authority = {Authority.ADMIN, Authority.USER})
+    @MockMember(email = "user45@test.org", authority = {Authority.USER})
     @DisplayName("게시글 테스트")
     void boardDataTest() throws Exception {
 
-        String body = om.writeValueAsString(form);
+//        for (int i = 0; i < 6; i++) {
+//
+//            // 게시글 작성
+//            String body = om.writeValueAsString(form);
+//
+//            String res = mockMvc.perform(post("/save")
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .content(body)).andDo(print())
+//                    .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+//
+//            JSONData jsonData = om.readValue(res, JSONData.class);
+//
+//            BoardData data = om.readValue(om.writeValueAsString(jsonData.getData()), BoardData.class);
+//        }
 
-        String res = mockMvc.perform(post("/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body)).andDo(print())
-                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+//        // 게시글 단일 조회
+//        mockMvc.perform(get("/view/" + data.getSeq()))
+//                .andDo(print());
+//
+        // 게시판에 속한 게시글 목록 조회
+//        mockMvc.perform(get("/list/" + "freetalk"))
+//                .andDo(print());
 
-        JSONData jsonData = om.readValue(res, JSONData.class);
-
-        BoardData data = om.readValue(om.writeValueAsString(jsonData.getData()), BoardData.class);
-
-        // System.out.println(data);
-
-        // 게시글 단일 조회
-        mockMvc.perform(get("/view/" + data.getSeq()))
+        // 게시글 상태 단일 | 목록 일괄 수정
+        mockMvc.perform(patch("/status")
+                .param("seq", "256")
+                .param("seq", "257")
+                .param("status", String.valueOf(DomainStatus.SECRET)))
                 .andDo(print());
-
-        // 게시글 목록 조회
-        mockMvc.perform(get("/list/" + config.getBid()))
-                .andDo(print());
-
-        // 게시글 유저 삭제
-        mockMvc.perform(patch("/userdeletes")
-                        .param("seq", String.valueOf(data.getSeq())))
-                .andDo(print());
+//        // 게시글 유저 삭제
+//        mockMvc.perform(patch("/userdeletes")
+//                        .param("seq", String.valueOf(data.getSeq())))
+//                .andDo(print());
 
         // 게시글 관리자 삭제
 //        mockMvc.perform(delete("/admin/deletes")

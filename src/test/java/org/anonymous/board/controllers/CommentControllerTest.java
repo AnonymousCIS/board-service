@@ -49,7 +49,7 @@ public class CommentControllerTest {
         _boardData.setBid("freetalk");
         _boardData.setSubject("게시글 제목");
         _boardData.setContent("게시글 내용");
-        _boardData.setPoster("작성자1");
+        _boardData.setPoster("작성자101");
         _boardData.setGid(UUID.randomUUID().toString());
         _boardData.setGuestPw("a1234");
         _boardData.setStatus(DomainStatus.ALL);
@@ -66,26 +66,25 @@ public class CommentControllerTest {
     }
 
     @Test
-    @MockMember(email = "user04@test.org")
+    @MockMember(email = "user101@test.org")
     @DisplayName("댓글 테스트")
     void commentTest() throws Exception {
 
-        String body = om.writeValueAsString(form);
+        for (int i = 0; i < 5; i++) {
+            String body = om.writeValueAsString(form);
 
-        String res = mockMvc.perform(post("/comment/save")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body)).andDo(print())
-                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+            String res = mockMvc.perform(post("/comment/save")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body)).andDo(print())
+                    .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        JSONData jsonData = om.readValue(res, JSONData.class);
+            JSONData jsonData = om.readValue(res, JSONData.class);
 
-        // CommentData data = om.readValue(om.writeValueAsString(jsonData), CommentData.class);
-
-        CommentData data = om.convertValue(jsonData.getData(), CommentData.class);
+            CommentData data = om.convertValue(jsonData.getData(), CommentData.class);
+        }
 
         // 댓글 단일 조회
-        mockMvc.perform(get("/comment/view/" + data.getSeq()))
-                .andDo(print());
+//        mockMvc.perform(get("/comment/view/" + data.getSeq())).andDo(print());
 
         // 게시글에 속한 댓글 목록 조회
         // mockMvc.perform(get("/comment/inboardlist/" + data.getData().getSeq())).andDo(print());

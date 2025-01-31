@@ -149,7 +149,7 @@ public class BoardAdminControllerTest {
     @DisplayName("차단 회원 컨텐츠 BLOCK 처리 테스트")
     void blockTest() throws Exception {
 
-        String email = "user04@test.org";
+        String email = "user44@test.org";
 
         mockMvc.perform(patch("/admin/block/" + email)
                         .header("Authorization", "Bearer " + token))
@@ -161,8 +161,15 @@ public class BoardAdminControllerTest {
     @DisplayName("게시글, 댓글 관리자 삭제 테스트")
     void deleteTest() throws Exception {
 
+        // 게시글 삭제 테스트
         mockMvc.perform(delete("/admin/deletes")
-                        .param("seq","1"))
+                        .param("seq","202")
+                        .param("seq", "1"))
+                .andDo(print());
+
+        // 댓글 삭제 테스트
+        mockMvc.perform(delete("/admin/comment/deletes")
+                .param("seq","54"))
                 .andDo(print());
     }
 }

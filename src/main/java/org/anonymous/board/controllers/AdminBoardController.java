@@ -57,7 +57,6 @@ public class AdminBoardController {
      * @return
      */
     @Operation(summary = "게시판 단일 등록 & 수정 처리", description = "신규 게시판 설정을 등록하거나 혹은 기존 게시판 설정을 수정합니다.")
-    // @ApiResponse(responseCode = "201",)
     @Parameters({
             @Parameter(name = "form", description = "게시판 설정 양식"),
             @Parameter(name = "bid", description = "게시판 ID", required = true, examples = {
