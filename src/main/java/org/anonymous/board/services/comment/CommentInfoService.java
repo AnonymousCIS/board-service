@@ -97,6 +97,7 @@ public class CommentInfoService {
 
         QCommentData commentData = QCommentData.commentData;
 
+        /*
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
         if (!memberUtil.isAdmin()) {
 
@@ -110,6 +111,7 @@ public class CommentInfoService {
             // 관리자 차단 댓글일 경우
             andBuilder.and(commentData.domainStatus.ne(DomainStatus.BLOCK));
         }
+         */
 
         // 댓글의 부모인 게시글의 등록번호(seq)로 조건
         andBuilder.and(commentData.data.seq.eq(seq));
@@ -300,5 +302,13 @@ public class CommentInfoService {
         // 댓글 수정 & 삭제 가능
         // 단 비회원은 비밀번호 검증 페이지로 넘어감
         item.setEditable(editable);
+
+        if (item.getDomainStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
+            item.setContent("차단된 댓글");
+        }
+
+        if (item.getDomainStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
+            item.setContent("비밀 댓글");
+        }
     }
 }

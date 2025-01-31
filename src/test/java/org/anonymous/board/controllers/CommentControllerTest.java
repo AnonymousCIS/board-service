@@ -66,7 +66,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @MockMember(email = "user44@test.org")
+    @MockMember(email = "user04@test.org")
     @DisplayName("댓글 테스트")
     void commentTest() throws Exception {
 

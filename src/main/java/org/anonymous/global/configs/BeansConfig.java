@@ -21,7 +21,12 @@ public class BeansConfig {
     @Lazy
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+        return restTemplate;
     }
 
     /**

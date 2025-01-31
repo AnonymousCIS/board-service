@@ -1,19 +1,28 @@
 package org.anonymous.board.controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.anonymous.board.entities.BlockData;
+import org.anonymous.global.libs.Utils;
+import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,16 +43,40 @@ public class BoardAdminControllerTest {
 
     private RequestConfig form2;
 
-    /*
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private Utils utils;
+
+    private String token;
+
+
     @BeforeEach
-    void init() {
+    void init() throws JsonProcessingException {
 
-        form = new RequestConfig();
+        Map<String, String> loginForm = new HashMap<>();
 
-        form.setBid("notice");
-        form.setName("공지사항");
+        loginForm.put("email", "user01@test.org");
+        loginForm.put("password", "_aA123456");
+
+        restTemplate = new RestTemplate();
+
+        HttpHeaders _headers = new HttpHeaders();
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(loginForm, _headers);
+
+        String apiUrl = utils.serviceUrl("member-service", "/login");
+
+        ResponseEntity<JSONData> item = restTemplate.exchange(apiUrl, HttpMethod.POST, request, JSONData.class);
+
+        token = item.getBody().getData().toString();
+
+        // if (StringUtils.hasText(token)) _headers.setBearerAuth(token);
+
+        System.out.println(token);
     }
-     */
+
 
     @Test
     @MockMember(authority = {Authority.ADMIN, Authority.USER})
@@ -116,9 +149,10 @@ public class BoardAdminControllerTest {
     @DisplayName("차단 회원 컨텐츠 BLOCK 처리 테스트")
     void blockTest() throws Exception {
 
-        String email = "user44@test.org";
+        String email = "user04@test.org";
 
-        mockMvc.perform(patch("/admin/block/" + email))
+        mockMvc.perform(patch("/admin/block/" + email)
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print());
     }
 
