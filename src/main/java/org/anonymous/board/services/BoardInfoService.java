@@ -29,6 +29,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static java.lang.String.valueOf;
+
 @Lazy
 @Service
 @RequiredArgsConstructor
@@ -156,6 +158,7 @@ public class BoardInfoService {
             andBuilder.and(boardData.domainStatus.in(statuses));
         }
 
+        /*
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
         if (!memberUtil.isAdmin()) {
 
@@ -163,12 +166,13 @@ public class BoardInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 게시글일 경우
-            andBuilder.and(boardData.domainStatus.ne(DomainStatus.SECRET)
+           andBuilder.and(boardData.domainStatus.ne(DomainStatus.SECRET)
                     .or(boardData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 게시글일 경우
             andBuilder.and(boardData.domainStatus.ne(DomainStatus.BLOCK));
         }
+         */
 
         /**
          * 키워드 검색
@@ -272,11 +276,16 @@ public class BoardInfoService {
                 query.orderBy(direction.equalsIgnoreCase("DESC")
                         ? boardData.recommendCount.desc() : boardData.recommendCount.asc());
 
+            } else if (boardData.domainStatus.equals(DomainStatus.BLOCK) && field.equals("modifiedAt")) {
+                // 차단 게시글일경우 차단된 시간순 정렬
+
+                query.orderBy(direction.equalsIgnoreCase("DESC") ?
+                        boardData.modifiedAt.desc() : boardData.modifiedAt.asc());
+
             } else { // 기본 정렬 조건 (1차 정렬 공지사항 최신순, 2차 정렬 최신순)
 
                 query.orderBy(boardData.notice.desc(), boardData.createdAt.desc());
             }
-
         } else { // 기본 정렬 조건 (1차 정렬 공지사항 최신순, 2차 정렬 최신순)
 
             query.orderBy(boardData.notice.desc(), boardData.createdAt.desc());
@@ -440,6 +449,14 @@ public class BoardInfoService {
         item.setEditable(editable);
         item.setMine(mine);
         /* listable, writable, editable, mine 처리 E */
+
+        if (item.getDomainStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
+            item.setSubject("차단된 게시글");
+        }
+        
+        if (item.getDomainStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
+            item.setSubject("비밀글");
+        }
     }
 
     private void addInfo(BoardData item) {

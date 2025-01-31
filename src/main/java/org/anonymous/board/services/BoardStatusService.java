@@ -1,5 +1,6 @@
 package org.anonymous.board.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.entities.BlockData;
@@ -13,12 +14,10 @@ import org.anonymous.board.repositories.CommentDataRepository;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.global.libs.Utils;
+import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +41,7 @@ public class BoardStatusService {
     private final BoardDataRepository boardDataRepository;
 
     private final CommentDataRepository commentDataRepository;
+    private final ObjectMapper om;
 
     /**
      * 게시글 & 댓글 상태 단일 변경
@@ -119,20 +119,27 @@ public class BoardStatusService {
             form.setEmail(email);
             form.setStatus(status);
 
-            String token = utils.getAuthToken();
+            try {
+                String token = utils.getAuthToken();
+                System.out.println("token: " + token);
+                // String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAdGVzdC5vcmciLCJhdXRob3JpdGllcyI6IkFETUlOfHxVU0VSIiwiZXhwIjoxNzM4MjQ1NDQ4fQ.1B2lwAevrJWAbTFEO9ZtQlYmJpRRNSZJF8syn09Y54LUoXAtDRScgLQhoQ9wOsVpGy89p990uf8tl_DswYOK1Q";t
 
-            // String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMDFAdGVzdC5vcmciLCJhdXRob3JpdGllcyI6IkFETUlOfHxVU0VSIiwiZXhwIjoxNzM4MjQ1NDQ4fQ.1B2lwAevrJWAbTFEO9ZtQlYmJpRRNSZJF8syn09Y54LUoXAtDRScgLQhoQ9wOsVpGy89p990uf8tl_DswYOK1Q";
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpHeaders headers = new HttpHeaders();
+                if (StringUtils.hasText(token)) headers.setBearerAuth(token);
+                String params = om.writeValueAsString(form);
+                System.out.println("params: " + params);
+                HttpEntity<String> request = new HttpEntity<>(params, headers);
 
-            if (StringUtils.hasText(token)) headers.setBearerAuth(token);
+                String apiUrl = utils.serviceUrl("member-service", "/admin/status");
 
-            HttpEntity<BlockData> request = new HttpEntity<>(headers);
+                ResponseEntity<JSONData> item = restTemplate.exchange(apiUrl, HttpMethod.PATCH, request, JSONData.class);
 
-            String apiUrl = utils.serviceUrl("member-service", "/admin/status");
+            } catch (Exception e) {
 
-            ResponseEntity<BlockData> item = restTemplate.exchange(apiUrl, HttpMethod.PATCH, request, BlockData.class);
-
+                e.printStackTrace();
+            }
             blockDataRepository.saveAndFlush(form);
         }
         /* Member 도메인에게 차단 게시글/댓글 정보 등록 요청 E */
