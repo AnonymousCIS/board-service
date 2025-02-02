@@ -2,10 +2,6 @@ package org.anonymous.board.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anonymous.board.constants.DomainStatus;
-import org.anonymous.board.entities.BoardData;
-import org.anonymous.board.entities.Config;
-import org.anonymous.board.services.configs.BoardConfigUpdateService;
-import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,7 +36,7 @@ public class BoardControllerTest {
 //
 //    private Config config;
 
-    // @BeforeEach
+    @BeforeEach
     void init() {
 //        RequestConfig _config = new RequestConfig() ;
 //
@@ -57,14 +51,14 @@ public class BoardControllerTest {
         form.setBid("freetalk");
         form.setSubject("제목");
         form.setContent("내용");
-        form.setPoster("작성자44");
+        form.setPoster("작성자66");
         form.setGid(UUID.randomUUID().toString());
         form.setGuestPw("a1234");
         form.setStatus(DomainStatus.ALL);
     }
 
     @Test
-    @MockMember(email = "user45@test.org", authority = {Authority.USER})
+    @MockMember(email = "user04@test.org", authority = {Authority.USER})
     @DisplayName("게시글 테스트")
     void boardDataTest() throws Exception {
 
@@ -93,17 +87,13 @@ public class BoardControllerTest {
 
         // 게시글 상태 단일 | 목록 일괄 수정
         mockMvc.perform(patch("/status")
-                .param("seq", "256")
-                .param("seq", "257")
-                .param("status", String.valueOf(DomainStatus.SECRET)))
+                .param("seq", "52")
+                .param("seq", "53")
+                .param("status", String.valueOf(DomainStatus.ALL)))
                 .andDo(print());
+
 //        // 게시글 유저 삭제
 //        mockMvc.perform(patch("/userdeletes")
-//                        .param("seq", String.valueOf(data.getSeq())))
-//                .andDo(print());
-
-        // 게시글 관리자 삭제
-//        mockMvc.perform(delete("/admin/deletes")
 //                        .param("seq", String.valueOf(data.getSeq())))
 //                .andDo(print());
     }

@@ -223,7 +223,7 @@ public class Utils {
 
             for (Cookie cookie : cookies) {
 
-                if (cookie.getName().equals("userHash")) {
+                if (cookie.getName().equals(userKey)) {
 
                     return cookie.getValue();
                 }

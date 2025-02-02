@@ -16,7 +16,6 @@ import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
-import org.anonymous.global.exceptions.UnAuthorizedException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -28,8 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-
-import static java.lang.String.valueOf;
 
 @Lazy
 @Service
@@ -60,9 +57,9 @@ public class BoardInfoService {
 
         BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
-        if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-        if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
 
         addInfo(item, true);
 

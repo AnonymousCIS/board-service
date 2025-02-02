@@ -3,7 +3,6 @@ package org.anonymous.board.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.anonymous.board.entities.BlockData;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.contants.Authority;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -149,7 +147,7 @@ public class BoardAdminControllerTest {
     @DisplayName("차단 회원 컨텐츠 BLOCK 처리 테스트")
     void blockTest() throws Exception {
 
-        String email = "user44@test.org";
+        String email = "user10@test.org";
 
         mockMvc.perform(patch("/admin/block/" + email)
                         .header("Authorization", "Bearer " + token))

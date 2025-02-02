@@ -91,10 +91,12 @@ public class BoardData extends BaseMemberEntity implements Serializable {
 
     // 이전 게시글
     @Transient
+    @JsonIgnore
     private BoardData prev;
 
     // 다음 게시글
     @Transient
+    @JsonIgnore
     private BoardData next;
 
     // 게시글 목록 버튼 노출 여부
