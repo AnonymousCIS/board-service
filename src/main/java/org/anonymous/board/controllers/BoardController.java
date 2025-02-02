@@ -175,9 +175,20 @@ public class BoardController {
     @GetMapping({"/list", "/list/{bid}"})
     public JSONData list(@PathVariable(name="bid", required = false) String bid, @ModelAttribute BoardSearch search) {
 
-        commonProcess(bid, "list");
+        ListData<BoardData> data = null;
 
-        ListData<BoardData> data = infoService.getList(bid, search);
+        if (StringUtils.hasText(bid)) {
+
+            data = infoService.getList(bid, search);
+
+            commonProcess(bid, "list");
+
+        } else {
+
+            data = infoService.getList(search);
+
+            commonProcess("", "list");
+        }
 
         return new JSONData(data);
     }
@@ -314,4 +325,15 @@ public class BoardController {
         // 게시판 권한 체크 - 글 목록, 글 작성
         authService.check(mode, bid);
     }
+
+    /**
+     * 모드로 개별 공통 처리
+     *
+     * @param mode
+     */
+//    private void commonProcess(String mode) {
+//
+//        // 게시판 권한 체크 - 글 목록
+//        authService.check(mode);
+//    }
 }

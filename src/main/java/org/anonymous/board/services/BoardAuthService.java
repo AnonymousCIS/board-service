@@ -1,5 +1,6 @@
 package org.anonymous.board.services;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.anonymous.board.entities.BoardData;
 import org.anonymous.board.entities.CommentData;
@@ -29,6 +30,8 @@ public class BoardAuthService {
 
     private final CommentInfoService commentInfoService;
 
+    private final JPAQueryFactory queryFactory;
+
     private final BoardInfoService infoService;
 
     private final MemberUtil memberUtil;
@@ -46,7 +49,8 @@ public class BoardAuthService {
      */
     public void check(String mode, String bid, Long seq) {
 
-        if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
+        // if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
+        if (!StringUtils.hasText(mode)
 
                 || (List.of("edit", "delete", "comment").contains(mode) && (seq == null || seq < 1L))) {
 
@@ -193,4 +197,15 @@ public class BoardAuthService {
             check(mode, seq);
         }
     }
+
+//    public void check(String mode) {
+//
+//        QBoardData item = QBoardData.boardData;
+//
+//        List<Long> seqs = queryFactory.select(item.seq)
+//                .from(item)
+//                .fetch();
+//
+//        check(mode, seqs);
+//    }
 }
