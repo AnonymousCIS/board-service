@@ -414,6 +414,15 @@ public class BoardInfoService {
                             .orderBy(boardData.seq.asc())
                             .fetchFirst();
 
+
+            if (prev != null) {
+                prev.setPrev(null);
+                prev.setNext(null);
+            }
+            if (next != null) {
+                next.setPrev(null);
+                next.setNext(null);
+            }
             item.setPrev(prev);
             item.setNext(next);
             /* 이전 & 다음 게시글 E */
