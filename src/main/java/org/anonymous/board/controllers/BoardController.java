@@ -175,20 +175,9 @@ public class BoardController {
     @GetMapping({"/list", "/list/{bid}"})
     public JSONData list(@PathVariable(name="bid", required = false) String bid, @ModelAttribute BoardSearch search) {
 
-        ListData<BoardData> data = null;
+        if (StringUtils.hasText(bid)) search.setBid(List.of(bid));
 
-        if (StringUtils.hasText(bid)) {
-
-            data = infoService.getList(bid, search);
-
-            commonProcess(bid, "list");
-
-        } else {
-
-            data = infoService.getList(search);
-
-            commonProcess("", "list");
-        }
+        ListData<BoardData> data = infoService.getList(search);
 
         return new JSONData(data);
     }

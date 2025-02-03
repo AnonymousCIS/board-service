@@ -49,15 +49,17 @@ public class BoardAuthService {
      */
     public void check(String mode, String bid, Long seq) {
 
-        // if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
-        if (!StringUtils.hasText(mode)
+        if (memberUtil.isAdmin()) return;
+
+         if (!StringUtils.hasText(mode) || !StringUtils.hasText(bid)
+        // if (!StringUtils.hasText(mode)
 
                 || (List.of("edit", "delete", "comment").contains(mode) && (seq == null || seq < 1L))) {
 
             throw new BadRequestException();
         }
 
-        if (memberUtil.isAdmin()) return;
+
 
         Config config = null;
 

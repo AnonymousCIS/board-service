@@ -6,6 +6,7 @@ import org.anonymous.board.entities.BoardData;
 import org.anonymous.global.rests.JSONData;
 import org.anonymous.member.contants.Authority;
 import org.anonymous.member.test.annotations.MockMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.service.GenericParameterService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -42,7 +44,7 @@ public class BoardControllerTest {
 //
 //    private Config config;
 
-    // @BeforeEach
+    @BeforeEach
     void init() {
 //        RequestConfig _config = new RequestConfig() ;
 //
@@ -64,7 +66,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    @MockMember(email = "user04@test.org", authority = {Authority.USER})
+    @MockMember(email = "user2@test.org", authority = {Authority.USER})
     @DisplayName("게시글 작성 및 수정 테스트")
     void boardDataTest() throws Exception {
 
