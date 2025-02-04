@@ -39,6 +39,8 @@ public class BoardDataValidator implements Validator, PasswordValidator {
     @Override
     public void validate(Object target, Errors errors) {
 
+        if (errors.hasErrors()) return;
+
         RequestBoardData form = (RequestBoardData) target;
 
         // 비회원 비밀번호 검증

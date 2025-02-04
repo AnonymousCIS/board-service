@@ -14,7 +14,7 @@ import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.CommentNotFoundException;
 import org.anonymous.board.repositories.CommentDataRepository;
-import org.anonymous.global.exceptions.UnAuthorizedException;
+import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -58,9 +58,11 @@ public class CommentInfoService {
 
         CommentData item = commentDataRepository.findById(seq).orElseThrow(CommentNotFoundException::new);
 
-        if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-        if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+
+        if (item.getDeletedAt() != null && !memberUtil.isAdmin()) throw new BadRequestException();
 
         return item;
     }
@@ -112,6 +114,9 @@ public class CommentInfoService {
             andBuilder.and(commentData.domainStatus.ne(DomainStatus.BLOCK));
         }
          */
+
+        // 관리자가 아닐 경우 유저삭제된 댓글은 제외하고 조회
+        if (!memberUtil.isAdmin())andBuilder.and(commentData.deletedAt.isNull());
 
         // 댓글의 부모인 게시글의 등록번호(seq)로 조건
         andBuilder.and(commentData.data.seq.eq(seq));

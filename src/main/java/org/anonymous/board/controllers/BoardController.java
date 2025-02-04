@@ -172,12 +172,12 @@ public class BoardController {
                     @ExampleObject(name = "BLOCK", value = "BLOCK", description = "관리자 차단 상태(관리자 조회 가능")
             })
     })
-    @GetMapping("/list/{bid}")
-    public JSONData list(@PathVariable("bid") String bid, @ModelAttribute BoardSearch search) {
+    @GetMapping({"/list", "/list/{bid}"})
+    public JSONData list(@PathVariable(name="bid", required = false) String bid, @ModelAttribute BoardSearch search) {
 
-        commonProcess(bid, "list");
+        if (StringUtils.hasText(bid)) search.setBid(List.of(bid));
 
-        ListData<BoardData> data = infoService.getList(bid, search);
+        ListData<BoardData> data = infoService.getList(search);
 
         return new JSONData(data);
     }
@@ -314,4 +314,15 @@ public class BoardController {
         // 게시판 권한 체크 - 글 목록, 글 작성
         authService.check(mode, bid);
     }
+
+    /**
+     * 모드로 개별 공통 처리
+     *
+     * @param mode
+     */
+//    private void commonProcess(String mode) {
+//
+//        // 게시판 권한 체크 - 글 목록
+//        authService.check(mode);
+//    }
 }

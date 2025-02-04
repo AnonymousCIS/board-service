@@ -16,7 +16,7 @@ import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
-import org.anonymous.global.exceptions.UnAuthorizedException;
+import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -28,8 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-
-import static java.lang.String.valueOf;
 
 @Lazy
 @Service
@@ -60,9 +58,11 @@ public class BoardInfoService {
 
         BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
-        if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-        if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+        // if (item.getDomainStatus().equals(DomainStatus.SECRET) && !memberUtil.isAdmin() && !item.isMine()) throw new UnAuthorizedException();
+
+        if (item.getDeletedAt() != null && !memberUtil.isAdmin()) throw new BadRequestException();
 
         addInfo(item, true);
 
@@ -173,6 +173,9 @@ public class BoardInfoService {
             andBuilder.and(boardData.domainStatus.ne(DomainStatus.BLOCK));
         }
          */
+
+        // 관리자가 아닐 경우 유저삭제된 게시글은 제외하고 조회
+        if (!memberUtil.isAdmin())andBuilder.and(boardData.deletedAt.isNull());
 
         /**
          * 키워드 검색
@@ -416,6 +419,16 @@ public class BoardInfoService {
                             .where(boardData.seq.gt(seq))
                             .orderBy(boardData.seq.asc())
                             .fetchFirst();
+
+            if (prev != null) {
+                prev.setPrev(null);
+                prev.setNext(null);
+            }
+
+            if (next != null) {
+                next.setPrev(null);
+                next.setNext(null);
+            }
 
             item.setPrev(prev);
             item.setNext(next);

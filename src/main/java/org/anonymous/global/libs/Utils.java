@@ -34,7 +34,7 @@ public class Utils {
     private final CodeValueRepository codeValueRepository;
 
     /**
-     * 메서지 코드로 조회된 문구
+     * 메세지 코드로 조회된 문구
      *
      * @param code
      * @return
@@ -223,7 +223,7 @@ public class Utils {
 
             for (Cookie cookie : cookies) {
 
-                if (cookie.getName().equals("userHash")) {
+                if (cookie.getName().equals(userKey)) {
 
                     return cookie.getValue();
                 }
