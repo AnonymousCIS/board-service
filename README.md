@@ -112,7 +112,14 @@
 
 ## 3. 데이터베이스 벤다이어그램
 
+### 관계 데이터(게시판 설정 - 게시글 - 댓글)
+![image](https://github.com/user-attachments/assets/50122374-1186-48aa-9981-55d4ef8735e4)
 
+### BOARD_VIEW(조회 관련)
+![image](https://github.com/user-attachments/assets/c4cb66ec-f821-49ab-ac4f-951ed70d7258)
+
+### BLOCK 데이터
+![image](https://github.com/user-attachments/assets/7750bf4b-e0d0-49b1-9fa3-d22f222940f7)
 
 ## 4. 스웨거 API
 https://cis-board-service.jinilog.com/apidocs.html
