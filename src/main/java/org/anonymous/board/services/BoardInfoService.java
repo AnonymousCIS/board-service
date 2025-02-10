@@ -246,7 +246,7 @@ public class BoardInfoService {
         JPAQuery<BoardData> query = queryFactory.selectFrom(boardData)
                 .leftJoin(boardData.config)
                 .fetchJoin()
-                .leftJoin(boardData.comment, commentData)
+                .leftJoin(boardData.comment)
                 .fetchJoin()
                 .where(andBuilder)
                 .offset(offset)
