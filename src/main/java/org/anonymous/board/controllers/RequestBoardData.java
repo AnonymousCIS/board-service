@@ -1,11 +1,13 @@
 package org.anonymous.board.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.anonymous.board.constants.DomainStatus;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestBoardData {
 
     // 게시글 번호
