@@ -1,6 +1,7 @@
 package org.anonymous.board.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.board.constants.DomainStatus;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(indexes = @Index(name = "idx_comment_data_created_at", columnList = "createdAt ASC"))
 public class CommentData extends BaseMemberEntity implements Serializable {
 
