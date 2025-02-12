@@ -1,5 +1,6 @@
 package org.anonymous.board.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.anonymous.board.constants.DomainStatus;
@@ -8,6 +9,7 @@ import org.anonymous.global.entities.BaseEntity;
 @Data
 @Entity
 @IdClass(BlockDataId.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(indexes = {
         @Index(name = "idx_block_created_at", columnList = "createdAt DESC"),
         @Index(name = "idx_block_email", columnList = "email")

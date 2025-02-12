@@ -1,5 +1,6 @@
 package org.anonymous.board.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @IdClass(BoardViewId.class)
 public class BoardView {
 
