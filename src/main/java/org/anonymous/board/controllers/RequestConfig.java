@@ -1,10 +1,12 @@
 package org.anonymous.board.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.anonymous.member.contants.Authority;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestConfig {
     private String mode;
 
