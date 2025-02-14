@@ -123,7 +123,8 @@ public class Pagination {
 
             // "?page=" 제거(filter)하고 다시 모아서(collect) 가공
             baseUrl += Arrays.stream(qs.split("&"))
-                    .filter(s -> !s.contains("page=")).collect(Collectors.joining("&"));
+                    .filter(s -> !s.contains("page="))
+                    .collect(Collectors.joining("&")) + "&";
 
             if (StringUtils.hasText(baseUrl)) baseUrl += "&";
         }
