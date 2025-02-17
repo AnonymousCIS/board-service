@@ -76,7 +76,7 @@ public class CommentUpdateService {
 
         item.setContent(form.getContent());
 
-        item.setDomainStatus(form.getStatus());
+        item.setStatus(form.getStatus());
 
         String guestPw = form.getGuestPw();
 
