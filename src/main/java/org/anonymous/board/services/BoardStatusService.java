@@ -67,9 +67,9 @@ public class BoardStatusService {
 
             // 게시글의 현재 DomainStatus 가 BLOCK && !isAdmin 이면 권한 없음 예외
             // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
-            if (boardData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+            if (boardData.getStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-            boardData.setDomainStatus(status);
+            boardData.setStatus(status);
 
             boardDataRepository.saveAndFlush(boardData);
 
@@ -81,9 +81,9 @@ public class BoardStatusService {
 
             // 댓글의 현재 DomainStatus 가 BLOCK && !isAdmin 이면 권한 없음 예외
             // 즉 ALL 이든 SECRET 이든 UNBLOCK 하는 경우
-            if (commentData.getDomainStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
+            if (commentData.getStatus().equals(DomainStatus.BLOCK) && !memberUtil.isAdmin()) throw new UnAuthorizedException();
 
-            commentData.setDomainStatus(status);
+            commentData.setStatus(status);
 
             commentDataRepository.saveAndFlush(commentData);
 
