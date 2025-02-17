@@ -83,7 +83,7 @@ public class BoardData extends BaseMemberEntity implements Serializable {
     private String category;
 
     @Enumerated(EnumType.STRING)
-    private DomainStatus domainStatus;
+    private DomainStatus status;
 
     @JsonIgnore
     @ToString.Exclude
