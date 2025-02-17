@@ -81,4 +81,7 @@ public class Config extends BaseMemberEntity implements Serializable {
 
     @Transient
     private boolean writable;
+
+    @Transient
+    private long total;
 }
