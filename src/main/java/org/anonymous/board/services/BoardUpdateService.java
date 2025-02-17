@@ -72,7 +72,7 @@ public class BoardUpdateService {
             data.setGid(form.getGid());
             data.setIpAddr(request.getRemoteAddr());
             data.setUserAgent(request.getHeader("User-Agent"));
-            data.setDomainStatus(form.getStatus());
+            data.setStatus(form.getStatus());
         }
 
         String guestPw = form.getGuestPw();
@@ -93,7 +93,7 @@ public class BoardUpdateService {
         data.setExternalLink(form.getExternalLink());
         data.setYoutubeUrl(form.getYoutubeUrl());
         data.setCategory(form.getCategory());
-        data.setDomainStatus(form.getStatus());
+        data.setStatus(form.getStatus());
 
         boardDataRepository.saveAndFlush(data);
 

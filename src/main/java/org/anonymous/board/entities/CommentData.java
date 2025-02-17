@@ -23,7 +23,7 @@ public class CommentData extends BaseMemberEntity implements Serializable {
     private BoardData data;
 
     @Enumerated(EnumType.STRING)
-    private DomainStatus domainStatus;
+    private DomainStatus status;
 
     // 작성자
     @Column(length = 40, nullable = false)
