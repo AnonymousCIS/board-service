@@ -9,6 +9,7 @@ import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.entities.QConfig;
 import org.anonymous.board.exceptions.ConfigNotFoundException;
+import org.anonymous.board.repositories.BoardDataRepository;
 import org.anonymous.board.repositories.ConfigRepository;
 import org.anonymous.global.paging.ListData;
 import org.anonymous.global.paging.Pagination;
@@ -34,6 +35,7 @@ import static org.springframework.data.domain.Sort.Order.desc;
 public class BoardConfigInfoService {
 
     private final ConfigRepository configRepository;
+    private final BoardDataRepository boardDataRepository;
 
     private final HttpServletRequest request;
 
@@ -161,5 +163,9 @@ public class BoardConfigInfoService {
         item.setListable(listable);
         item.setWritable(writeable);
         /* listable, writable E */
+
+        /* 게시글 총 갯수 */
+        long total = boardDataRepository.getTotal(item.getBid());
+        item.setTotal(total);
     }
 }
