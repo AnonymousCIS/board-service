@@ -155,7 +155,7 @@ public class BoardInfoService {
 
         if (statuses != null && !statuses.isEmpty()) {
 
-            andBuilder.and(boardData.domainStatus.in(statuses));
+            andBuilder.and(boardData.status.in(statuses));
         }
 
         /*
@@ -279,7 +279,7 @@ public class BoardInfoService {
                 query.orderBy(direction.equalsIgnoreCase("DESC")
                         ? boardData.recommendCount.desc() : boardData.recommendCount.asc());
 
-            } else if (boardData.domainStatus.equals(DomainStatus.BLOCK) && field.equals("modifiedAt")) {
+            } else if (boardData.status.equals(DomainStatus.BLOCK) && field.equals("modifiedAt")) {
                 // 차단 게시글일경우 차단된 시간순 정렬
 
                 query.orderBy(direction.equalsIgnoreCase("DESC") ?
@@ -463,11 +463,11 @@ public class BoardInfoService {
         item.setMine(mine);
         /* listable, writable, editable, mine 처리 E */
 
-        if (item.getDomainStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
+        if (item.getStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
             item.setSubject("차단된 게시글");
         }
         
-        if (item.getDomainStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
+        if (item.getStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
             item.setSubject("비밀글");
         }
     }

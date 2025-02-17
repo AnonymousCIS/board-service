@@ -169,7 +169,7 @@ public class CommentInfoService {
 
         if (statuses != null && !statuses.isEmpty()) {
 
-            andBuilder.and(commentData.domainStatus.in(statuses));
+            andBuilder.and(commentData.status.in(statuses));
         }
 
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
@@ -179,11 +179,11 @@ public class CommentInfoService {
             // dsl 문은 ! 사용 불가
 
             // 비밀 게시글일 경우
-            andBuilder.and(commentData.domainStatus.ne(DomainStatus.SECRET)
+            andBuilder.and(commentData.status.ne(DomainStatus.SECRET)
                     .or(commentData.createdBy.eq(memberUtil.getMember().getEmail())));
 
             // 관리자 차단 게시글일 경우
-            andBuilder.and(commentData.domainStatus.ne(DomainStatus.BLOCK));
+            andBuilder.and(commentData.status.ne(DomainStatus.BLOCK));
         }
 
         /**
@@ -308,11 +308,11 @@ public class CommentInfoService {
         // 단 비회원은 비밀번호 검증 페이지로 넘어감
         item.setEditable(editable);
 
-        if (item.getDomainStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
+        if (item.getStatus() == DomainStatus.BLOCK && !memberUtil.isAdmin()) {
             item.setContent("차단된 댓글");
         }
 
-        if (item.getDomainStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
+        if (item.getStatus() == DomainStatus.SECRET && !memberUtil.isAdmin() && !item.isMine()) {
             item.setContent("비밀 댓글");
         }
     }
