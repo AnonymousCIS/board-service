@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.global.entities.BaseMemberEntity;
 
@@ -19,6 +20,7 @@ public class CommentData extends BaseMemberEntity implements Serializable {
     private Long seq;
 
     @JsonIgnore
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private BoardData data;
 
