@@ -48,7 +48,7 @@ public class BoardController {
 
     private final BoardDeleteService deleteService;
 
-    private final BoardRecommendUpdateService recommendUpdateService;
+    private final BoardRecommendService recommendService;
 
     /**
      * 게시판 설정 단일 조회
@@ -179,7 +179,19 @@ public class BoardController {
 
         if (StringUtils.hasText(bid)) search.setBid(List.of(bid));
 
-        ListData<BoardData> data = infoService.getList(search);
+        String mode = search.getMode();
+
+        ListData<BoardData> data = null;
+
+        if (mode != null && mode.equals("recommend")) {
+            List<Long> seq = recommendService.getMyRecommends();
+            search.setSeq(seq);
+            data = infoService.getList(search);
+
+        } else if (mode != null && mode.equals("my")) {
+
+            data = infoService.getMyList(search);
+        }
 
         return new JSONData(data);
     }
@@ -262,11 +274,38 @@ public class BoardController {
     @GetMapping("/recommendcount/{seq}")
     public JSONData recommendCount(@PathVariable("seq") Long seq) {
 
-        long total = recommendUpdateService.process(seq);
+        long total = recommendService.process(seq);
 
         return new JSONData(total);
     }
 
+    /**
+     * 내가 추천한 게시글 목록 조회
+     *
+     * @param search
+     * @return
+     */
+    @GetMapping("/recommendlist")
+    public JSONData MyRecomendList(@ModelAttribute BoardSearch search) {
+
+        ListData<BoardData> data = recommendService.getMyRecommendList( search);
+
+        return new JSONData(data);
+    }
+
+    /**
+     * 내가 작성한 게시글 목록 조회
+     *
+     * @param search
+     * @return
+     */
+    @GetMapping("/myList")
+    public JSONData MyList(@ModelAttribute BoardSearch search) {
+
+        ListData<BoardData> data = infoService.getMyList(search);
+
+        return new JSONData(data);
+    }
 
 
     /**

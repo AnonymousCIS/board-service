@@ -158,6 +158,12 @@ public class BoardInfoService {
             andBuilder.and(boardData.status.in(statuses));
         }
 
+        // Seq 검색 - 나의 추천 게시글 조회용
+        List<Long> seqs = search.getSeq();
+        if (seqs != null && !seqs.isEmpty()) {
+            andBuilder.and(boardData.seq.in(seqs));
+        }
+
         /*
         // 관리자가 아닐 경우 비밀글, 차단글을 조회 목록에서 제외
         if (!memberUtil.isAdmin()) {
