@@ -288,7 +288,7 @@ public class BoardController {
     @GetMapping("/recommendlist")
     public JSONData MyRecomendList(@ModelAttribute BoardSearch search) {
 
-        ListData<BoardData> data = recommendService.getMyRecommends(search);
+        List<Long> data = recommendService.getMyRecommends();
 
         return new JSONData(data);
     }
