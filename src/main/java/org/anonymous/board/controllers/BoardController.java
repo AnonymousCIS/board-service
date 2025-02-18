@@ -191,7 +191,13 @@ public class BoardController {
         } else if (mode != null && mode.equals("my")) {
 
             data = infoService.getMyList(search);
+
+        } else {
+            
+            data = infoService.getList(search);
         }
+
+
 
         return new JSONData(data);
     }
