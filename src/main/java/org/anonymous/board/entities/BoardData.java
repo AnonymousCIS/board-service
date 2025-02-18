@@ -84,7 +84,7 @@ public class BoardData extends BaseMemberEntity implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private DomainStatus status;
-    
+
     @ToString.Exclude
     @OneToMany(mappedBy = "data", cascade = CascadeType.REMOVE)
     private List<CommentData> comment;

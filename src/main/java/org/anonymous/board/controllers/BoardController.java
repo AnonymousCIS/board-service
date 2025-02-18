@@ -48,6 +48,8 @@ public class BoardController {
 
     private final BoardDeleteService deleteService;
 
+    private final BoardRecommendUpdateService recommendUpdateService;
+
     /**
      * 게시판 설정 단일 조회
      *
@@ -247,6 +249,25 @@ public class BoardController {
         
         return new JSONData(total);
     }
+
+    /**
+     * 추천수 업데이트 처리
+     *
+     * @param seq
+     * @return
+     */
+    @Operation(summary = "게시글 추천수 업데이트 처리", description = "게시글 추천수 업데이트시 반영 처리합니다.")
+    @Parameter(name = "seq", description = "게시글 ID", example = "1125")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @GetMapping("/recommendcount/{seq}")
+    public JSONData recommendCount(@PathVariable("seq") Long seq) {
+
+        long total = recommendUpdateService.process(seq);
+
+        return new JSONData(total);
+    }
+
+
 
     /**
      * 비회원 비밀번호 검증
