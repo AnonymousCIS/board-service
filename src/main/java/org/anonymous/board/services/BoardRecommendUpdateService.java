@@ -40,11 +40,11 @@ public class BoardRecommendUpdateService {
 
         // 조회수 업데이트 (BoardData.viewCount)
 
-        QBoardData boardData = QBoardData.boardData;
+        QBoardRecommend boardRecommend = QBoardRecommend.boardRecommend;
 
-        long total = boardDataRepository.count(boardData.seq.eq(seq));
+        long total = boardRecommendRepository.count(boardRecommend.seq.eq(seq));
 
-        item.setViewCount(total);
+         item.setRecommendCount(total);
 
         boardDataRepository.saveAndFlush(item);
 
