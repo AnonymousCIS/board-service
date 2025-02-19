@@ -10,11 +10,13 @@ import org.anonymous.board.constants.DomainStatus;
 import org.anonymous.board.controllers.BoardSearch;
 import org.anonymous.board.controllers.RequestBoardData;
 import org.anonymous.board.entities.BoardData;
+import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.entities.Config;
 import org.anonymous.board.entities.QBoardData;
 import org.anonymous.board.entities.QCommentData;
 import org.anonymous.board.exceptions.BoardDataNotFoundException;
 import org.anonymous.board.repositories.BoardDataRepository;
+import org.anonymous.board.services.comment.CommentInfoService;
 import org.anonymous.board.services.configs.BoardConfigInfoService;
 import org.anonymous.global.exceptions.BadRequestException;
 import org.anonymous.global.libs.Utils;
@@ -48,6 +50,8 @@ public class BoardInfoService {
 
     private final Utils utils;
 
+    private final CommentInfoService commentInfoService;
+
     /**
      * 게시글 단일 조회
      *
@@ -66,6 +70,10 @@ public class BoardInfoService {
 
         addInfo(item, true);
 
+        List<CommentData> comments = item.getComment();
+        if (comments != null) {
+            comments.forEach(commentInfoService::addInfo);
+        }
         return item;
     }
 

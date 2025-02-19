@@ -296,7 +296,7 @@ public class CommentInfoService {
      *
      * @param item
      */
-    private void addInfo(CommentData item) {
+    public void addInfo(CommentData item) {
 
         Member member = memberUtil.getMember();
 
