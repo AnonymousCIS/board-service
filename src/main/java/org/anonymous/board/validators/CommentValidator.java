@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.anonymous.board.controllers.RequestComment;
 import org.anonymous.board.entities.CommentData;
 import org.anonymous.board.repositories.CommentDataRepository;
+import org.anonymous.global.libs.Utils;
 import org.anonymous.global.validators.PasswordValidator;
 import org.anonymous.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +19,7 @@ import org.springframework.validation.Validator;
 @Component
 @RequiredArgsConstructor
 public class CommentValidator implements Validator, PasswordValidator {
+    private final Utils utils;
 
     private final CommentDataRepository commentDataRepository;
 
@@ -83,7 +85,10 @@ public class CommentValidator implements Validator, PasswordValidator {
 
         if (item != null && StringUtils.hasText(item.getGuestPw())) {
 
-            return passwordEncoder.matches(password, item.getGuestPw());
+            if (passwordEncoder.matches(password, item.getGuestPw())) {
+                utils.saveValue(utils.getUserHash() + "_comment_" + seq, true);
+                return true;
+            }
         }
 
         return false;
