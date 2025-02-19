@@ -304,6 +304,9 @@ public class CommentInfoService {
 
         boolean editable = memberUtil.isAdmin() || createdBy == null || (memberUtil.isLogin() && member.getEmail().equals(createdBy));
 
+        boolean mine = utils.getValue(utils.getUserHash() + "_comment_" + item.getSeq()) != null || (memberUtil.isLogin() && member.getEmail().equals(createdBy));
+        item.setMine(mine);
+
         // 댓글 수정 & 삭제 가능
         // 단 비회원은 비밀번호 검증 페이지로 넘어감
         item.setEditable(editable);
