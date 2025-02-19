@@ -83,7 +83,10 @@ public class BoardDataValidator implements Validator, PasswordValidator {
         BoardData item = boardDataRepository.findById(seq).orElse(null);
 
         if (item != null && StringUtils.hasText(item.getGuestPw())) {
-            return passwordEncoder.matches(password, item.getGuestPw());
+            if ( passwordEncoder.matches(password, item.getGuestPw())) {
+                utils.saveValue(utils.getUserHash() + "_board_" + seq, true);
+                return true;
+            }
         }
 
         return false;

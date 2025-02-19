@@ -128,7 +128,7 @@ public class BoardAuthService {
                 // 사용자별로 다르게 Redis 에 저장
                 if (utils.getValue(utils.getUserHash() + "_board_" + seq) == null) {
 
-                    utils.saveValue(utils.getUserHash() + "_seq", seq);
+                    utils.saveValue(utils.getUserHash() + "_board_", seq);
 
                     throw new GuestPasswordCheckException();
                 }
@@ -147,7 +147,7 @@ public class BoardAuthService {
 
                 if (utils.getValue(utils.getUserHash() + "_comment_" + seq) == null) { // 댓글 비회원 인증 X
 
-                    utils.saveValue(utils.getUserHash() + "_cSeq", seq);
+                    utils.saveValue(utils.getUserHash() + "_comment_", seq);
 
                     throw new GuestPasswordCheckException();
                 }
